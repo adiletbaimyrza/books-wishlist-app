@@ -1,22 +1,41 @@
-const API_KEY: string = 'AIzaSyD-2SYYVG-vCeLhk5x0c0PxtPONd8twS_M'
+import {
+  FavouritesPage,
+  HomePage,
+  ReadPage,
+  ToReadPage,
+  NotFoundPage,
+  SearchPage,
+} from './pages'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-import axios from 'axios'
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <HomePage />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        path: '/favourites',
+        element: <FavouritesPage />,
+      },
+      {
+        path: '/toread',
+        element: <ToReadPage />,
+      },
+      {
+        path: '/read',
+        element: <ReadPage />,
+      },
+      {
+        path: '/search',
+        element: <SearchPage />,
+      },
+    ],
+  },
+])
 
 function App() {
-  const fetchData = () => {
-    axios
-      .get(
-        'https://www.googleapis.com/books/v1/volumes?q=react&filter=free-ebooks&key=AIzaSyD-2SYYVG-vCeLhk5x0c0PxtPONd8twS_M'
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err))
-  }
-  return (
-    <>
-      <input type="text" />
-      <button onClick={fetchData}>Search</button>
-    </>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App

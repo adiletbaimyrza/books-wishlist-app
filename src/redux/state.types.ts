@@ -1,5 +1,5 @@
-type CounterState = {
-  value: number
+type BookState = {
+  title: string
 }
 
-export type { CounterState }
+export type { BookState }

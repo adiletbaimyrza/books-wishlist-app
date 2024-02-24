@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { SearchedBookProps } from '../components'
 
-const initialState: string[] = []
+const initialState: SearchedBookProps[] = []
 
 const searchedBooksSlice = createSlice({
   name: 'searchedBooks',
   initialState,
   reducers: {
-    updateSearchedBooks: (_, action: PayloadAction<string[]>) => {
+    updateSearchedBooks: (_, action: PayloadAction<SearchedBookProps[]>) => {
       return action.payload
     },
   },

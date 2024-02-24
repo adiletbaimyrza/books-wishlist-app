@@ -10,4 +10,15 @@ type RoutePageLayoutProps = {
   children: React.ReactNode
 }
 
-export type { CustomNavLinkProps, RoutePageLayoutProps }
+type SearchedBookProps = {
+  id?: string
+  title?: string
+  authors?: string[]
+  publishedDate?: string
+  description?: string
+  averageRating?: number
+  ratingsCount?: number
+  smallThumbnail?: string
+}
+
+export type { CustomNavLinkProps, RoutePageLayoutProps, SearchedBookProps }

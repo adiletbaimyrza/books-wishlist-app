@@ -3,19 +3,13 @@ import { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateSearchedBooks, updateSearchValue } from '../redux'
-import { RoutePageLayout } from '../components'
+import { RoutePageLayout, SearchedBook } from '../components'
+import { MAX_ITEMS_PER_REQUEST } from '../utils/constants'
 
 import Illustration from '../assets/boy-and-books-illustration.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-
-const API_KEY: string = 'AIzaSyD-2SYYVG-vCeLhk5x0c0PxtPONd8twS_M'
-
-interface BookItem {
-  volumeInfo: {
-    title: string
-  }
-}
+import { mapBook } from '../utils/mappers'
 
 const SearchPage = () => {
   const searchedBooks = useSelector((state: RootState) => state.searchedBooks)
@@ -26,15 +20,17 @@ const SearchPage = () => {
   const fetchData = () => {
     axios
       .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchValue}&filter=free-ebooks&key=${API_KEY}`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchValue}&maxResults=${MAX_ITEMS_PER_REQUEST}`
       )
-      .then((res) =>
-        dispatch(
-          updateSearchedBooks(
-            res.data.items.map((book: BookItem) => book.volumeInfo.title)
-          )
-        )
-      )
+      .then((res) => {
+        console.log(res.data.items)
+        return res
+      })
+      .then((res) => {
+        const searchedBooks = res.data.items.map((item: any) => mapBook(item))
+        return searchedBooks
+      })
+      .then((books) => dispatch(updateSearchedBooks(books)))
       .catch((err) => console.error(err))
   }
 
@@ -58,8 +54,24 @@ const SearchPage = () => {
             id="mySearch"
             name="q"
             placeholder="Ex: War and Peace by Leo Tolstoy"
+            list="fruits"
           ></input>
-          <button className="search-button" onClick={fetchData}>
+          <datalist id="fruits">
+            <option value="Apple" />
+            <option value="Banana" />
+            <option value="Orange" />
+            <option value="Grapes" />
+            <option value="Strawberry" />
+          </datalist>
+          <button
+            className={
+              searchValue.length === 0
+                ? 'search-button'
+                : 'search-button search-button-active'
+            }
+            onClick={fetchData}
+            disabled={searchValue.length === 0 ? true : false}
+          >
             <div id="search-icon-wrapper" className="icon-wrapper">
               <FontAwesomeIcon icon={faMagnifyingGlass} />
             </div>
@@ -67,9 +79,32 @@ const SearchPage = () => {
           </button>
         </div>
       </div>
-      {searchedBooks.map((book, index) => (
-        <h4 key={index}>{book}</h4>
-      ))}
+      <div className="searched-books-grid">
+        {searchedBooks.map(
+          ({
+            id,
+            title,
+            authors,
+            publishedDate,
+            description,
+            averageRating,
+            ratingsCount,
+            smallThumbnail,
+          }) => (
+            <SearchedBook
+              key={id}
+              id={id}
+              title={title}
+              authors={authors}
+              publishedDate={publishedDate}
+              description={description}
+              averageRating={averageRating}
+              ratingsCount={ratingsCount}
+              smallThumbnail={smallThumbnail}
+            />
+          )
+        )}
+      </div>
     </RoutePageLayout>
   )
 }

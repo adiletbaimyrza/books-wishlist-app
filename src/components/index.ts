@@ -1,11 +1,15 @@
 // COMPONENTS
 import CustomNavLink from './CustomNavLink'
 import RoutePageLayout from './RoutePageLayout'
+import SearchedBook from './SearchedBook'
 
-export { CustomNavLink, RoutePageLayout }
+export { CustomNavLink, RoutePageLayout, SearchedBook }
 
 // TYPES
-import { CustomNavLinkProps } from './components.types'
-import { RoutePageLayoutProps } from './components.types'
+import {
+  CustomNavLinkProps,
+  RoutePageLayoutProps,
+  SearchedBookProps,
+} from './components.types'
 
-export type { CustomNavLinkProps, RoutePageLayoutProps }
+export type { CustomNavLinkProps, RoutePageLayoutProps, SearchedBookProps }

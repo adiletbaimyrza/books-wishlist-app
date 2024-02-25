@@ -1,6 +1,7 @@
 import { MAX_DESCRIPTION_LENGTH } from '../utils/constants'
 import { truncateDescription, undefinedCaseHandler } from '../utils/helpers'
 import { SearchedBookProps } from './components.types'
+import { Link } from 'react-router-dom'
 
 const SearchedBook = ({
   id,
@@ -9,7 +10,6 @@ const SearchedBook = ({
   publishedDate,
   description,
   averageRating,
-  ratingsCount,
   smallThumbnail,
 }: SearchedBookProps) => {
   const formattedTitle = undefinedCaseHandler(title, 'title')
@@ -30,13 +30,9 @@ const SearchedBook = ({
   const formattedAverageRating = averageRating
     ? `${averageRating} / 5.0`
     : 'No ratings'
-  const formattedRatingsCount = undefinedCaseHandler(
-    ratingsCount,
-    'ratings number'
-  )
 
   return (
-    <div id={`id-${id}`} className="sb-card">
+    <Link id={`id-${id}`} className="sb-card" to={`/search/${id}`}>
       <div className="sb-thumbnail-wrapper">
         {smallThumbnail ? (
           <img src={smallThumbnail} className="sb-thumbnail" />
@@ -54,7 +50,7 @@ const SearchedBook = ({
           <p className="sb-published-date">{formattedPublishedDate}</p>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

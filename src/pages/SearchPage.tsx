@@ -17,15 +17,38 @@ const SearchPage = () => {
 
   const dispatch = useDispatch()
 
-  const fetchData = () => {
+  type ApiProps = {
+    author: string | undefined
+    title: string | undefined
+    sortBy: 'relevance' | 'newest' | undefined
+    onlyFreeBooks: boolean | undefined
+  }
+
+  const fetchData = ({ author, title, sortBy, onlyFreeBooks }: ApiProps) => {
+    let filters = `https://www.googleapis.com/books/v1/volumes?q=${searchValue}`
+
+    if (author !== undefined) {
+      filters = filters.concat(`+inauthor:${author}`)
+    }
+
+    if (title !== undefined) {
+      filters = filters.concat(`+intitle:${title}`)
+    }
+
+    if (onlyFreeBooks === true) {
+      filters = filters.concat('&filter=free-ebooks')
+    }
+
+    if (sortBy !== undefined) {
+      filters = filters.concat(`&orderBy=${sortBy}`)
+    }
+
+    filters = filters.concat(`&maxResults=${MAX_ITEMS_PER_REQUEST}`)
+
+    console.log(filters)
+
     axios
-      .get(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchValue}&maxResults=${MAX_ITEMS_PER_REQUEST}`
-      )
-      .then((res) => {
-        console.log(res.data.items)
-        return res
-      })
+      .get(filters)
       .then((res) => {
         const searchedBooks = res.data.items.map((item: any) => mapBook(item))
         return searchedBooks
@@ -69,7 +92,41 @@ const SearchPage = () => {
                 ? 'search-button'
                 : 'search-button search-button-active'
             }
-            onClick={fetchData}
+            onClick={() => {
+              fetchData({
+                author:
+                  (document.querySelector('#filter-author') as HTMLInputElement)
+                    ?.value.length > 0
+                    ? (
+                        document.querySelector(
+                          '#filter-author'
+                        ) as HTMLInputElement
+                      )?.value
+                    : undefined,
+                title:
+                  (document.querySelector('#filter-title') as HTMLInputElement)
+                    ?.value.length > 0
+                    ? (
+                        document.querySelector(
+                          '#filter-title'
+                        ) as HTMLInputElement
+                      )?.value
+                    : undefined,
+                sortBy:
+                  (document.querySelector('#sortby') as HTMLSelectElement)
+                    ?.value === 'relevance' ||
+                  (document.querySelector('#sortby') as HTMLSelectElement)
+                    ?.value === 'newest'
+                    ? (document.querySelector('#sortby') as HTMLSelectElement)
+                        ?.value
+                    : undefined,
+                onlyFreeBooks:
+                  (document.querySelector('#filter-free') as HTMLInputElement)
+                    ?.checked === true
+                    ? true
+                    : undefined,
+              })
+            }}
             disabled={searchValue.length === 0 ? true : false}
           >
             <div id="search-icon-wrapper" className="icon-wrapper">
@@ -77,6 +134,27 @@ const SearchPage = () => {
             </div>
             Search
           </button>
+        </div>
+        <div className="search-filters">
+          <div className="filters-item">
+            <input id="filter-free" className="filter-free" type="checkbox" />
+            Only free books
+          </div>
+          <div className="filters-item">
+            Filter by author:
+            <input id="filter-author" type="text" className="filter-ins" />
+          </div>
+          <div className="filters-item">
+            Filter by title:
+            <input id="filter-title" type="text" className="filter-ins" />
+          </div>
+          <div className="filters-item">
+            Sort by:
+            <select id="sortby" className="filter-ins">
+              <option value="relevance">Relevance</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
         </div>
       </div>
       <div className="searched-books-grid">

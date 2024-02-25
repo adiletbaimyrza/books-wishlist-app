@@ -5,6 +5,7 @@ import {
   ToReadPage,
   NotFoundPage,
   SearchPage,
+  SingleBookPage,
 } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: '/search',
         element: <SearchPage />,
+      },
+      {
+        path: '/search/:id',
+        element: <SingleBookPage />,
       },
     ],
   },

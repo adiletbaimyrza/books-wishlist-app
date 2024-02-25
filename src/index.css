@@ -43,7 +43,7 @@ body,
 }
 
 .active-link {
-  background-color: #383838;
+  background-color: #4a5878;
 }
 
 .nav-link:hover {
@@ -65,6 +65,7 @@ body,
   margin: 40px;
   width: 100%;
   overflow: auto;
+  padding-right: 40px;
 }
 
 .search-books {
@@ -75,6 +76,27 @@ body,
   background-color: #383838;
   border-radius: 8px;
   margin-bottom: 80px;
+}
+
+.search-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.filter-free {
+  margin-right: 10px;
+}
+
+.filter-ins {
+  margin-left: 10px;
+  padding: 10px 20px;
+  outline: unset;
+  color: #ffffff;
+  background-color: #2c2c2c;
+  border: 1px solid #414141;
+  border-radius: 8px;
 }
 
 .search-field {
@@ -137,6 +159,8 @@ body,
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #414141;
+  text-decoration: unset;
+  color: inherit;
 }
 
 .sb-card:hover {

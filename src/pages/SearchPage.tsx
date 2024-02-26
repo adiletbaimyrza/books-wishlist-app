@@ -121,7 +121,7 @@ const SearchPage = () => {
                   )
                   .then((res): void => {
                     const suggestions = res.data.items.map(
-                      (item: GoogleBooksApiResponse) => item.volumeInfo.title
+                      (item: GoogleBooksApiResponse) => item.volumeInfo?.title
                     )
                     setInputSuggestions(suggestions)
                   })

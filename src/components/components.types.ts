@@ -21,27 +21,27 @@ type GridBookProps = {
 }
 
 type GoogleBooksApiResponse = {
-  id: string
-  averageRating: number
-  volumeInfo: {
-    title: string
-    description: string
-    authors: string[]
-    publisher: string
-    publishedDate: string
-    imageLinks: {
-      thumbnail: string
-      smallThumbnail: string
+  id?: string
+  averageRating?: number
+  volumeInfo?: {
+    title?: string
+    description?: string
+    authors?: string[]
+    publisher?: string
+    publishedDate?: string
+    imageLinks?: {
+      thumbnail?: string
+      smallThumbnail?: string
     }
-    averageRating: number
+    averageRating?: number
   }
-  saleInfo: {
-    buyLink: string
+  saleInfo?: {
+    buyLink?: string
   }
-  accessInfo: {
-    pdf: {
-      isAvailable: boolean
-      downloadLink: string
+  accessInfo?: {
+    pdf?: {
+      isAvailable?: boolean
+      downloadLink?: string
     }
   }
 }

@@ -46,9 +46,10 @@ const SingleBookPage = () => {
       ? singleBook.volumeInfo?.authors.join(', ')
       : 'No authors.'
 
-  const formattedPublishedDate = singleBook.volumeInfo
-    ? new Date(singleBook.volumeInfo.publishedDate).getFullYear()
-    : 'No published date.'
+  const formattedPublishedDate =
+    singleBook.volumeInfo && singleBook.volumeInfo.publishedDate
+      ? new Date(singleBook.volumeInfo?.publishedDate).getFullYear()
+      : 'No published date.'
 
   const formattedPublisher = singleBook.volumeInfo
     ? singleBook.volumeInfo.publisher
@@ -75,7 +76,7 @@ const SingleBookPage = () => {
           </a>
           <a
             className="sbp-link"
-            href={singleBook.accessInfo?.pdf.downloadLink}
+            href={singleBook.accessInfo?.pdf?.downloadLink}
           >
             Download
           </a>

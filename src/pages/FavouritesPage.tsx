@@ -1,34 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../redux/store'
+import { updateFavourites } from '../redux'
 import axios from 'axios'
-import { RoutePageLayout, GoogleBooksApiResponse } from '../components'
-import { GridBook } from '../components'
+import {
+  RoutePageLayout,
+  GoogleBooksApiResponse,
+  GridBook,
+} from '../components'
 import { mapBook } from '../utils/mappers'
 
 const FavouritesPage = () => {
-  const [books, setBooks] = useState<GoogleBooksApiResponse[]>([])
+  const favourites = useSelector((state: RootState) => state.favourites)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const favouritesRaw = localStorage.getItem('favourites')
     const favourites = favouritesRaw !== null ? JSON.parse(favouritesRaw) : []
 
     const fetchBooks = async () => {
-      const booksArray: GoogleBooksApiResponse[] = []
-      for (const fav of favourites) {
-        const address = `https://www.googleapis.com/books/v1/volumes/${fav}`
-        const res = await axios.get(address)
-        booksArray.push(res.data)
+      const favouriteBooks: GoogleBooksApiResponse[] = []
+      for (const favId of favourites) {
+        const res = await axios.get(
+          `https://www.googleapis.com/books/v1/volumes/${favId}`
+        )
+        favouriteBooks.push(res.data)
       }
-      setBooks(booksArray)
+      dispatch(updateFavourites(favouriteBooks))
     }
 
     fetchBooks()
-  }, [])
+  }, [favourites, dispatch])
 
   return (
     <RoutePageLayout>
       <h1 className="grand-title">Your favourites</h1>
       <div className="searched-books-grid">
-        {books.map((boo) => {
+        {favourites.map((boo) => {
           const book = mapBook(boo)
           return (
             <GridBook

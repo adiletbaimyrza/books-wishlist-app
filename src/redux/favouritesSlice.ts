@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { GoogleBooksApiResponse } from '../components'
 
-const initialState: string[] = []
+const initialState: GoogleBooksApiResponse[] = []
 
 const favouritesSlice = createSlice({
   name: 'favourites',
   initialState,
   reducers: {
-    updateFavourites: (_, action: PayloadAction<string[]>) => {
+    updateFavourites: (_, action: PayloadAction<GoogleBooksApiResponse[]>) => {
       return action.payload
     },
   },

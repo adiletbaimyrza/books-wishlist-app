@@ -294,3 +294,14 @@ body,
   font-size: 50px;
   margin-bottom: 50px;
 }
+
+#sbp-control-button {
+  background-color: #8a38f5;
+  color: #ffffff;
+  border-radius: 6px;
+  border: unset;
+  padding: 10px 20px;
+}
+#sbp-control-button:hover {
+  background-color: #7e33df;
+}

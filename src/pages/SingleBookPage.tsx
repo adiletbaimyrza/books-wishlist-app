@@ -89,8 +89,12 @@ const SingleBookPage = () => {
       </div>
       <div className="sbp-review"></div>
       <div className="sbp-controls">
-        <button className="sbp-control" onClick={addToCollections}>
-          add
+        <button
+          id="sbp-control-button"
+          className="sbp-control"
+          onClick={addToCollections}
+        >
+          Add To:
         </button>
         <select
           className="sbp-control"

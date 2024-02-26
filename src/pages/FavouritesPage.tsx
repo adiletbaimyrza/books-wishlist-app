@@ -1,17 +1,42 @@
-import { RoutePageLayout } from '../components'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { RoutePageLayout, GoogleBooksApiResponse } from '../components'
+import { GridBook } from '../components'
 
 const FavouritesPage = () => {
-  let favourites: string[] = []
-  const favouritesRaw = localStorage.getItem('favourites')
+  const [books, setBooks] = useState<GoogleBooksApiResponse[]>([])
 
-  if (favouritesRaw !== null) {
-    favourites = JSON.parse(favouritesRaw)
-  }
+  useEffect(() => {
+    const favouritesRaw = localStorage.getItem('favourites')
+    const favourites = favouritesRaw !== null ? JSON.parse(favouritesRaw) : []
+
+    const fetchBooks = async () => {
+      const booksArray: GoogleBooksApiResponse[] = []
+      for (const fav of favourites) {
+        const address = `https://www.googleapis.com/books/v1/volumes/${fav}`
+        const res = await axios.get(address)
+        booksArray.push(res.data)
+      }
+      setBooks(booksArray)
+    }
+
+    fetchBooks()
+  }, [])
 
   return (
     <RoutePageLayout>
-      {favourites.map((fav) => (
-        <div>{fav}</div>
+      {books.map((book) => (
+        <GridBook
+          key={book.id}
+          id={book.id}
+          title={book.volumeInfo.title}
+          authors={book.volumeInfo.authors}
+          publishedDate={book.volumeInfo.publishedDate}
+          description={book.volumeInfo.description}
+          averageRating={undefined}
+          ratingsCount={undefined}
+          smallThumbnail={undefined}
+        />
       ))}
     </RoutePageLayout>
   )

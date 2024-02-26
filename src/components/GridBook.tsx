@@ -1,7 +1,7 @@
+import { Link } from 'react-router-dom'
 import { MAX_DESCRIPTION_LENGTH } from '../utils/constants'
 import { truncateDescription, undefinedCaseHandler } from '../utils/helpers'
 import { GridBookProps } from './components.types'
-import { Link } from 'react-router-dom'
 
 const GridBook = ({
   id,

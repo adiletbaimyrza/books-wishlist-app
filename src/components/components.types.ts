@@ -32,6 +32,7 @@ type GoogleBooksApiResponse = {
     publishedDate: string
     imageLinks: {
       thumbnail: string
+      smallThumbnail: string
     }
   }
   saleInfo: {

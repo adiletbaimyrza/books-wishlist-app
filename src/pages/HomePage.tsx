@@ -10,21 +10,21 @@ import {
 
 const NAV_LINKS: CustomNavLinkProps[] = [
   {
-    path: '/books-wishlist-app/search',
+    path: 'search',
     faIcon: faMagnifyingGlass,
     name: 'Search books',
   },
   {
-    path: '/books-wishlist-app/favourites',
+    path: 'favourites',
     faIcon: faStar,
     name: 'Favourites',
   },
   {
-    path: '/books-wishlist-app/toread',
+    path: 'toread',
     faIcon: faBasketShopping,
     name: 'To read',
   },
-  { path: '/books-wishlist-app/read', faIcon: faBookmark, name: 'Read' },
+  { path: 'read', faIcon: faBookmark, name: 'Read' },
 ]
 
 const HomePage = () => {

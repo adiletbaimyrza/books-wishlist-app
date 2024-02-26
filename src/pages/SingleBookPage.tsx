@@ -13,10 +13,8 @@ const SingleBookPage = () => {
   const { id } = useParams()
 
   useEffect(() => {
-    const address = `https://www.googleapis.com/books/v1/volumes/${id}`
-
     axios
-      .get(address)
+      .get(`https://www.googleapis.com/books/v1/volumes/${id}`)
       .then((res) => dispatch(updateSingleBook(res.data)))
       .catch((err) => console.error(err))
   }, [id, dispatch])
@@ -156,7 +154,14 @@ const SingleBookPage = () => {
         </select>
       </div>
       {isInLocalStorage(id) && (
-        <button onClick={removeFromCollections}>REMOVE FROM COLLECTIONS</button>
+        <div>
+          <button
+            className="remove-from-collections-button"
+            onClick={removeFromCollections}
+          >
+            REMOVE FROM COLLECTIONS
+          </button>
+        </div>
       )}
     </RoutePageLayout>
   )

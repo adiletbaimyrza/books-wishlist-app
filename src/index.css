@@ -282,6 +282,7 @@ body,
 
 .sbp-controls {
   margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .sbp-control {
@@ -309,4 +310,12 @@ body,
 }
 #sbp-control-button:hover {
   background-color: #7e33df;
+}
+
+.remove-from-collections-button {
+  background-color: #aa6060;
+  color: #ffffff;
+  border-radius: 6px;
+  border: unset;
+  padding: 10px 20px;
 }

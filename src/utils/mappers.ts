@@ -1,6 +1,6 @@
-import { GridBookProps } from '../components'
+import { GoogleBooksApiResponse, GridBookProps } from '../components'
 
-const mapBook = (rawBookObj: any) => {
+const mapBook = (rawBookObj: GoogleBooksApiResponse) => {
   const vol = rawBookObj.volumeInfo
 
   const smallThumbnail = vol.imageLinks ? vol.imageLinks.smallThumbnail : ''
@@ -12,7 +12,6 @@ const mapBook = (rawBookObj: any) => {
     publishedDate: vol.publishedDate,
     description: vol.description,
     averageRating: vol.averageRating,
-    ratingsCount: vol.ratingsCount,
     smallThumbnail: smallThumbnail,
   } as GridBookProps
 }

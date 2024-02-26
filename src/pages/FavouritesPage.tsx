@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { RoutePageLayout, GoogleBooksApiResponse } from '../components'
 import { GridBook } from '../components'
+import { mapBook } from '../utils/mappers'
 
 const FavouritesPage = () => {
   const [books, setBooks] = useState<GoogleBooksApiResponse[]>([])
@@ -25,19 +26,24 @@ const FavouritesPage = () => {
 
   return (
     <RoutePageLayout>
-      {books.map((book) => (
-        <GridBook
-          key={book.id}
-          id={book.id}
-          title={book.volumeInfo.title}
-          authors={book.volumeInfo.authors}
-          publishedDate={book.volumeInfo.publishedDate}
-          description={book.volumeInfo.description}
-          averageRating={undefined}
-          ratingsCount={undefined}
-          smallThumbnail={undefined}
-        />
-      ))}
+      <h1>Your favourites</h1>
+      <div className="searched-books-grid">
+        {books.map((boo) => {
+          const book = mapBook(boo)
+          return (
+            <GridBook
+              key={book.id}
+              id={book.id}
+              title={book.title}
+              authors={book.authors}
+              publishedDate={book.publishedDate}
+              description={book.description}
+              averageRating={book.averageRating}
+              smallThumbnail={book.smallThumbnail}
+            />
+          )
+        })}
+      </div>
     </RoutePageLayout>
   )
 }

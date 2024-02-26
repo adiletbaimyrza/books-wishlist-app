@@ -17,7 +17,6 @@ type GridBookProps = {
   publishedDate?: string
   description?: string
   averageRating?: number
-  ratingsCount?: number
   smallThumbnail?: string
 }
 
@@ -34,6 +33,7 @@ type GoogleBooksApiResponse = {
       thumbnail: string
       smallThumbnail: string
     }
+    averageRating: number
   }
   saleInfo: {
     buyLink: string

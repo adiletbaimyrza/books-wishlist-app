@@ -1,18 +1,49 @@
-import { RoutePageLayout } from '../components'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { RoutePageLayout, GoogleBooksApiResponse } from '../components'
+import { GridBook } from '../components'
+import { mapBook } from '../utils/mappers'
 
 const ReadPage = () => {
-  let read: string[] = []
-  const readStringified = localStorage.getItem('read')
+  const [books, setBooks] = useState<GoogleBooksApiResponse[]>([])
 
-  if (readStringified !== null) {
-    read = JSON.parse(readStringified)
-  }
+  useEffect(() => {
+    const readRaw = localStorage.getItem('read')
+    const read = readRaw !== null ? JSON.parse(readRaw) : []
+
+    const fetchBooks = async () => {
+      const booksArray: GoogleBooksApiResponse[] = []
+      for (const r of read) {
+        const address = `https://www.googleapis.com/books/v1/volumes/${r}`
+        const res = await axios.get(address)
+        booksArray.push(res.data)
+      }
+      setBooks(booksArray)
+    }
+
+    fetchBooks()
+  }, [])
 
   return (
     <RoutePageLayout>
-      {read.map((bookId) => (
-        <div>{bookId}</div>
-      ))}
+      <h1>Your Read Books</h1>
+      <div className="searched-books-grid">
+        {books.map((boo) => {
+          const book = mapBook(boo)
+          return (
+            <GridBook
+              key={book.id}
+              id={book.id}
+              title={book.title}
+              authors={book.authors}
+              publishedDate={book.publishedDate}
+              description={book.description}
+              averageRating={book.averageRating}
+              smallThumbnail={book.smallThumbnail}
+            />
+          )
+        })}
+      </div>
     </RoutePageLayout>
   )
 }

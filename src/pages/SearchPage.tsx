@@ -169,7 +169,6 @@ const SearchPage = () => {
             publishedDate,
             description,
             averageRating,
-            ratingsCount,
             smallThumbnail,
           }) => (
             <GridBook
@@ -180,7 +179,6 @@ const SearchPage = () => {
               publishedDate={publishedDate}
               description={description}
               averageRating={averageRating}
-              ratingsCount={ratingsCount}
               smallThumbnail={smallThumbnail}
             />
           )

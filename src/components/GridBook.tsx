@@ -32,7 +32,7 @@ const GridBook = ({
     : 'No ratings'
 
   return (
-    <Link id={`id-${id}`} className="sb-card" to={`/${id}`}>
+    <Link id={`id-${id}`} className="sb-card" to={`/books-wishlist-app/${id}`}>
       <div className="sb-thumbnail-wrapper">
         {smallThumbnail ? (
           <img src={smallThumbnail} className="sb-thumbnail" />

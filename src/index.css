@@ -12,8 +12,7 @@ p {
 html,
 body,
 #root,
-.layout,
-.route-page-layout {
+.layout {
   height: 100%;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
@@ -318,4 +317,12 @@ body,
   border-radius: 6px;
   border: unset;
   padding: 10px 20px;
+}
+
+.no-books {
+  flex-grow: 1;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

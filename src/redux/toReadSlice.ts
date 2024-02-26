@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { GoogleBooksApiResponse } from '../components'
 
-const initialState: string[] = []
+const initialState: GoogleBooksApiResponse[] = []
 
 const toReadSlice = createSlice({
   name: 'toRead',
   initialState,
   reducers: {
-    updateToRead: (_, action: PayloadAction<string[]>) => {
+    updateToRead: (_, action: PayloadAction<GoogleBooksApiResponse[]>) => {
       return action.payload
     },
   },

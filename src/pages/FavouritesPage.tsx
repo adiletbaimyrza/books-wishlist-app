@@ -35,23 +35,27 @@ const FavouritesPage = () => {
   return (
     <RoutePageLayout>
       <h1 className="grand-title">Your favourites</h1>
-      <div className="searched-books-grid">
-        {favourites.map((boo) => {
-          const book = mapBook(boo)
-          return (
-            <GridBook
-              key={book.id}
-              id={book.id}
-              title={book.title}
-              authors={book.authors}
-              publishedDate={book.publishedDate}
-              description={book.description}
-              averageRating={book.averageRating}
-              smallThumbnail={book.smallThumbnail}
-            />
-          )
-        })}
-      </div>
+      {favourites.length !== 0 ? (
+        <div className="searched-books-grid">
+          {favourites.map((boo) => {
+            const book = mapBook(boo)
+            return (
+              <GridBook
+                key={book.id}
+                id={book.id}
+                title={book.title}
+                authors={book.authors}
+                publishedDate={book.publishedDate}
+                description={book.description}
+                averageRating={book.averageRating}
+                smallThumbnail={book.smallThumbnail}
+              />
+            )
+          })}
+        </div>
+      ) : (
+        <div className="no-books">No books in this collection.</div>
+      )}
     </RoutePageLayout>
   )
 }

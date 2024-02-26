@@ -8,6 +8,7 @@ import {
   SingleBookPage,
 } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import FeaturedPage from './pages/FeaturedPage'
 
 const router = createBrowserRouter([
   {
@@ -28,12 +29,17 @@ const router = createBrowserRouter([
         element: <ReadPage />,
       },
       {
+        index: true,
         path: '/search',
         element: <SearchPage />,
       },
       {
-        path: '/search/:id',
+        path: '/:id',
         element: <SingleBookPage />,
+      },
+      {
+        path: '/featured',
+        element: <FeaturedPage />,
       },
     ],
   },

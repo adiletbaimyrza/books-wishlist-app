@@ -26,7 +26,7 @@ const ToReadPage = () => {
 
   return (
     <RoutePageLayout>
-      <h1>Your To Read Books</h1>
+      <h1 className="grand-title">Your To Read Books</h1>
       <div className="searched-books-grid">
         {books.map((boo) => {
           const book = mapBook(boo)

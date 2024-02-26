@@ -82,7 +82,7 @@ body,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 50px;
 }
 
 .filter-free {
@@ -288,4 +288,9 @@ body,
   border: 1px solid #414141;
   border-radius: 8px;
   margin-right: 20px;
+}
+
+.grand-title {
+  font-size: 50px;
+  margin-bottom: 50px;
 }

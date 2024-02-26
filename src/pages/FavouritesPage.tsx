@@ -26,7 +26,7 @@ const FavouritesPage = () => {
 
   return (
     <RoutePageLayout>
-      <h1>Your favourites</h1>
+      <h1 className="grand-title">Your favourites</h1>
       <div className="searched-books-grid">
         {books.map((boo) => {
           const book = mapBook(boo)

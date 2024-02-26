@@ -61,8 +61,44 @@ const SearchPage = () => {
       .catch((err) => console.error(err))
   }
 
+  const fetchDataWithFilters = () => {
+    fetchData({
+      author:
+        (document.querySelector('#filter-author') as HTMLInputElement)?.value
+          .length > 0
+          ? (document.querySelector('#filter-author') as HTMLInputElement)
+              ?.value
+          : undefined,
+      title:
+        (document.querySelector('#filter-title') as HTMLInputElement)?.value
+          .length > 0
+          ? (document.querySelector('#filter-title') as HTMLInputElement)?.value
+          : undefined,
+      sortBy:
+        (document.querySelector('#sortby') as HTMLSelectElement)?.value ===
+          'relevance' ||
+        (document.querySelector('#sortby') as HTMLSelectElement)?.value ===
+          'newest'
+          ? (document.querySelector('#sortby') as HTMLSelectElement)?.value
+          : undefined,
+      onlyFreeBooks:
+        (document.querySelector('#filter-free') as HTMLInputElement)
+          ?.checked === true
+          ? true
+          : undefined,
+    })
+  }
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(updateSearchValue(event.target.value))
+  }
+
+  const handleEnterKeyPress = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === 'Enter') {
+      fetchDataWithFilters()
+    }
   }
 
   return (
@@ -97,6 +133,7 @@ const SearchPage = () => {
             name="q"
             placeholder={SEARCH_PLACEHOLDER}
             list="suggestions"
+            onKeyPress={handleEnterKeyPress}
           ></input>
           <datalist id="suggestions">
             {inputSuggestions.map((suggestion, index) => (
@@ -109,41 +146,7 @@ const SearchPage = () => {
                 ? 'search-button'
                 : 'search-button search-button-active'
             }
-            onClick={() => {
-              fetchData({
-                author:
-                  (document.querySelector('#filter-author') as HTMLInputElement)
-                    ?.value.length > 0
-                    ? (
-                        document.querySelector(
-                          '#filter-author'
-                        ) as HTMLInputElement
-                      )?.value
-                    : undefined,
-                title:
-                  (document.querySelector('#filter-title') as HTMLInputElement)
-                    ?.value.length > 0
-                    ? (
-                        document.querySelector(
-                          '#filter-title'
-                        ) as HTMLInputElement
-                      )?.value
-                    : undefined,
-                sortBy:
-                  (document.querySelector('#sortby') as HTMLSelectElement)
-                    ?.value === 'relevance' ||
-                  (document.querySelector('#sortby') as HTMLSelectElement)
-                    ?.value === 'newest'
-                    ? (document.querySelector('#sortby') as HTMLSelectElement)
-                        ?.value
-                    : undefined,
-                onlyFreeBooks:
-                  (document.querySelector('#filter-free') as HTMLInputElement)
-                    ?.checked === true
-                    ? true
-                    : undefined,
-              })
-            }}
+            onClick={fetchDataWithFilters}
             disabled={searchValue.length === 0 ? true : false}
           >
             <div id="search-icon-wrapper" className="icon-wrapper">
@@ -159,11 +162,21 @@ const SearchPage = () => {
           </div>
           <div className="filters-item">
             Filter by author:
-            <input id="filter-author" type="text" className="filter-ins" />
+            <input
+              id="filter-author"
+              type="text"
+              className="filter-ins"
+              onKeyPress={handleEnterKeyPress}
+            />
           </div>
           <div className="filters-item">
             Filter by title:
-            <input id="filter-title" type="text" className="filter-ins" />
+            <input
+              id="filter-title"
+              type="text"
+              className="filter-ins"
+              onKeyPress={handleEnterKeyPress}
+            />
           </div>
           <div className="filters-item">
             Sort by:

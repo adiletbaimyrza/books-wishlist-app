@@ -1,10 +1,10 @@
 import axios from 'axios'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateGridBooks, updateSearchValue } from '../redux'
 import { RoutePageLayout, GridBook } from '../components'
-import { MAX_ITEMS_PER_REQUEST } from '../utils/constants'
+import { MAX_ITEMS_PER_REQUEST, SEARCH_PLACEHOLDER } from '../utils/constants'
 
 import Illustration from '../assets/boy-and-books-illustration.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,6 +15,7 @@ import { GoogleBooksApiResponse } from '../components/components.types'
 const SearchPage = () => {
   const GridBooks = useSelector((state: RootState) => state.GridBooks)
   const searchValue = useSelector((state: RootState) => state.searchValue)
+  const [inputSuggestions, setInputSuggestions] = useState<string[]>([])
 
   const dispatch = useDispatch()
 
@@ -74,20 +75,33 @@ const SearchPage = () => {
         <div className="search-field">
           <input
             value={searchValue}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              handleInputChange(e)
+
+              if (e.target.value.length > 0) {
+                axios
+                  .get(
+                    `https://www.googleapis.com/books/v1/volumes?q=${e.target.value}`
+                  )
+                  .then((res): void => {
+                    const suggestions = res.data.items.map(
+                      (item: GoogleBooksApiResponse) => item.volumeInfo.title
+                    )
+                    setInputSuggestions(suggestions)
+                  })
+              }
+            }}
             className="search"
             type="search"
-            id="mySearch"
+            id="search"
             name="q"
-            placeholder="Ex: War and Peace by Leo Tolstoy"
-            list="fruits"
+            placeholder={SEARCH_PLACEHOLDER}
+            list="suggestions"
           ></input>
-          <datalist id="fruits">
-            <option value="Apple" />
-            <option value="Banana" />
-            <option value="Orange" />
-            <option value="Grapes" />
-            <option value="Strawberry" />
+          <datalist id="suggestions">
+            {inputSuggestions.map((suggestion, index) => (
+              <option key={index}>{suggestion}</option>
+            ))}
           </datalist>
           <button
             className={

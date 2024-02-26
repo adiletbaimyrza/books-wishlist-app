@@ -33,6 +33,54 @@ const SingleBookPage = () => {
     localStorage.setItem(selectedOption, JSON.stringify(collections))
   }
 
+  const isInLocalStorage = (id: string | undefined): boolean => {
+    const collectionsNames = ['favourites', 'to read', 'read']
+
+    return collectionsNames.some((collectionName) => {
+      const collectionRaw: string | null = localStorage.getItem(collectionName)
+      const collection: string[] =
+        collectionRaw !== null ? JSON.parse(collectionRaw) : []
+      return id ? collection.includes(id) : false
+    })
+  }
+
+  const removeFromCollections = () => {
+    const favouritesCollectionsRaw: string | null =
+      localStorage.getItem('favourites')
+    const toReadCollectionsRaw: string | null = localStorage.getItem('to read')
+    const readCollectionsRaw: string | null = localStorage.getItem('read')
+
+    let favoriteCollections: string[] =
+      favouritesCollectionsRaw !== null
+        ? JSON.parse(favouritesCollectionsRaw)
+        : []
+    let toReadCollections: string[] =
+      toReadCollectionsRaw !== null ? JSON.parse(toReadCollectionsRaw) : []
+    let readCollections: string[] =
+      readCollectionsRaw !== null ? JSON.parse(readCollectionsRaw) : []
+
+    if (id) {
+      if (favoriteCollections.find((collectionId) => collectionId === id)) {
+        favoriteCollections = favoriteCollections.filter(
+          (collectionId) => collectionId !== id
+        )
+        localStorage.setItem('favourites', JSON.stringify(favoriteCollections))
+      }
+      if (toReadCollections.find((collectionId) => collectionId === id)) {
+        toReadCollections = toReadCollections.filter(
+          (collectionId) => collectionId !== id
+        )
+        localStorage.setItem('to read', JSON.stringify(toReadCollections))
+      }
+      if (readCollections.find((collectionId) => collectionId === id)) {
+        readCollections = readCollections.filter(
+          (collectionId) => collectionId !== id
+        )
+        localStorage.setItem('read', JSON.stringify(readCollections))
+      }
+    }
+  }
+
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedOption(event.target.value)
   }
@@ -107,6 +155,9 @@ const SingleBookPage = () => {
           <option value="read">read</option>
         </select>
       </div>
+      {isInLocalStorage(id) && (
+        <button onClick={removeFromCollections}>REMOVE FROM COLLECTIONS</button>
+      )}
     </RoutePageLayout>
   )
 }

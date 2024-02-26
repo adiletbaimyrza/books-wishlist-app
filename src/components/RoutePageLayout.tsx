@@ -28,13 +28,13 @@ const NAV_LINKS: CustomNavLinkProps[] = [
 
 const RoutePageLayout = ({ children }: RoutePageLayoutProps) => {
   return (
-    <div className="route-page-layout">
+    <div className="layout">
       <nav className="navbar">
         {NAV_LINKS.map(({ path, faIcon, name }, index) => (
           <CustomNavLink key={index} path={path} faIcon={faIcon} name={name} />
         ))}
       </nav>
-      {children}
+      <div className="route-page-layout">{children}</div>
     </div>
   )
 }

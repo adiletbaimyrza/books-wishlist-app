@@ -1,4 +1,4 @@
-import { SearchedBookProps } from '../components'
+import { GridBookProps } from '../components'
 
 const mapBook = (rawBookObj: any) => {
   const vol = rawBookObj.volumeInfo
@@ -14,7 +14,7 @@ const mapBook = (rawBookObj: any) => {
     averageRating: vol.averageRating,
     ratingsCount: vol.ratingsCount,
     smallThumbnail: smallThumbnail,
-  } as SearchedBookProps
+  } as GridBookProps
 }
 
 export { mapBook }

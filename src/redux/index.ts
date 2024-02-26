@@ -1,4 +1,5 @@
-import { updateSearchedBooks } from './searchedBooksSlice'
+import { updateGridBooks } from './gridBookSlice'
 import { updateSearchValue } from './searchValueSlice'
+import { updateSingleBook } from './singleBookSlice'
 
-export { updateSearchedBooks, updateSearchValue }
+export { updateGridBooks, updateSearchValue, updateSingleBook }

@@ -1,20 +1,65 @@
 {
-  "id": "zyTCAlFPjgYC",
-  "selfLink": "https://www.googleapis.com/books/v1/volumes/zyTCAlFPjgYC",
+  "kind": "books#volume",
+  "id": "x9A6jwVvge0C",
+  "etag": "tNyPK5hgu1Y",
+  "selfLink": "https://www.googleapis.com/books/v1/volumes/x9A6jwVvge0C",
   "volumeInfo": {
-    "title": "The Google story",
-    "authors": ["David A. Vise", "Mark Malseed"],
-    "publisher": "Random House Digital, Inc.",
-    "publishedDate": "2005-11-15",
-    "description": "\"Here is the story behind one of the most remark",
-    "pageCount": 207,
-    "printType": "BOOK",
-    "mainCategory": "Business & Economics / Entrepreneurship",
-    "averageRating": 3.5,
-    "ratingsCount": 136,
-    "imageLinks": {
-      "smallThumbnail": "https://books.google.com/books?id=zyTCAlFPjgYC&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+    "title": "War and Peace",
+    "authors": ["graf Leo Tolstoy"],
+    "publisher": "C. Scribner's Sons",
+    "publishedDate": "1898",
+    "readingModes": {
+      "text": false,
+      "image": true
     },
-    "language": "en"
+    "pageCount": 672,
+    "printedPageCount": 672,
+    "dimensions": {
+      "height": "18.00 cm"
+    },
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.1.2.0.full.1",
+    "panelizationSummary": {
+      "containsEpubBubbles": false,
+      "containsImageBubbles": false
+    },
+    "imageLinks": {
+      "smallThumbnail": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=5&edge=curl&imgtk=AFLRE71k2-h7P7eBSczWPA7-BKfBDqoj27kBPCmICoeTRREmO71PsDqe4X6X9TVDgjyoy4lpsXE6XkUzRuwB54X30y46ulZB2sgxDZ9Wu2Jvip_WWfT2xHQK6JHPRp2iAReRVb1q4MGR&source=gbs_api",
+      "thumbnail": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=1&edge=curl&imgtk=AFLRE72YRkQjbnNabW6nJRq8JW6ycKsnIgYq5XY-qeexh32asYYgR7rZeqtwxSZ-CxxAVMj-y7S63OANVhi9qNr1sudgzVgeA0g0y4LVagBuO65m6C8Hn36uxmcqX1rYKpigFVUcSFLU&source=gbs_api",
+      "small": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=2&edge=curl&imgtk=AFLRE71w6UqLBNyo72Eph10J_6w39Hd88c0E9yGufb72xiIGPrBuuYyXL_ypoAasQpUgCS5nJQeTVtGzSe-gvyE3BfotagH486lVKvOAzwocjpdr0YsPsWhDNleEPAwyWiy3U5WZoabv&source=gbs_api",
+      "medium": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=3&edge=curl&imgtk=AFLRE72ise20P62gMazMsVsQFLlym2t-h0YqYmXkTvXp1J0YpsJtD3r-losAD315ZKCviFU4RlQa3FsevYppmmNq3EWo3Qt6LXxiqK1z5YzVeriWQulZCBTx7dmr-xRbXJyb_Q5OVNtJ&source=gbs_api",
+      "large": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=4&edge=curl&imgtk=AFLRE70ySepo21g7QY4cjN0NSm8qb_W0wfHXMiulOYA47M0VfJ94g-GByp541KU9wrCaESiqhX8ntsFkGqetDUXSNOsnBHVOfNdgsIsVEoMPSz1f10eMdM35koyFng7hyePO9Eh425hD&source=gbs_api",
+      "extraLarge": "http://books.google.com/books/content?id=x9A6jwVvge0C&printsec=frontcover&img=1&zoom=6&edge=curl&imgtk=AFLRE71YbdgMxAt2SoLx2Sa5FmHNhTySSWkD9wRISOMBnQ5iZFDhsDy9FccsHUgaB3xOS00bNx5KipKZBHSkgJ-Wfl4PcEOYfGxnemdou3lavd0mjOf2xo1j4jyhH5mbydzw73xDcIsh&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.pl/books?id=x9A6jwVvge0C&hl=&source=gbs_api",
+    "infoLink": "https://play.google.com/store/books/details?id=x9A6jwVvge0C&source=gbs_api",
+    "canonicalVolumeLink": "https://play.google.com/store/books/details?id=x9A6jwVvge0C"
+  },
+  "saleInfo": {
+    "country": "PL",
+    "saleability": "FREE",
+    "isEbook": true,
+    "buyLink": "https://play.google.com/store/books/details?id=x9A6jwVvge0C&rdid=book-x9A6jwVvge0C&rdot=1&source=gbs_api"
+  },
+  "accessInfo": {
+    "country": "PL",
+    "viewability": "ALL_PAGES",
+    "embeddable": true,
+    "publicDomain": true,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+      "isAvailable": false,
+      "downloadLink": "http://books.google.pl/books/download/War_and_Peace.epub?id=x9A6jwVvge0C&hl=&output=epub&source=gbs_api"
+    },
+    "pdf": {
+      "isAvailable": true,
+      "downloadLink": "http://books.google.pl/books/download/War_and_Peace.pdf?id=x9A6jwVvge0C&hl=&output=pdf&sig=ACfU3U1BZ9-PP9JT9tedk2c_56KoJJKmBg&source=gbs_api"
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=x9A6jwVvge0C&hl=&source=gbs_api",
+    "accessViewStatus": "FULL_PUBLIC_DOMAIN",
+    "quoteSharingAllowed": false
   }
 }

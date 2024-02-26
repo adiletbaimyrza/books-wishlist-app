@@ -1,11 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
-import searchedBooksReducer from './searchedBooksSlice'
+import GridBooksReducer from './gridBookSlice'
 import searchValueReducer from './searchValueSlice'
+import singleBookReducer from './singleBookSlice'
+import favouritesReducer from './favouritesSlice'
+import readReducer from './readSlice'
+import toReadReducer from './toReadSlice'
 
 export const store = configureStore({
   reducer: {
-    searchedBooks: searchedBooksReducer,
+    GridBooks: GridBooksReducer,
     searchValue: searchValueReducer,
+    singleBook: singleBookReducer,
+    favourites: favouritesReducer,
+    read: readReducer,
+    toRead: toReadReducer,
   },
 })
 

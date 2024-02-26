@@ -2,17 +2,18 @@ import axios from 'axios'
 import { ChangeEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
-import { updateSearchedBooks, updateSearchValue } from '../redux'
-import { RoutePageLayout, SearchedBook } from '../components'
+import { updateGridBooks, updateSearchValue } from '../redux'
+import { RoutePageLayout, GridBook } from '../components'
 import { MAX_ITEMS_PER_REQUEST } from '../utils/constants'
 
 import Illustration from '../assets/boy-and-books-illustration.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { mapBook } from '../utils/mappers'
+import { GoogleBooksApiResponse } from '../components/components.types'
 
 const SearchPage = () => {
-  const searchedBooks = useSelector((state: RootState) => state.searchedBooks)
+  const GridBooks = useSelector((state: RootState) => state.GridBooks)
   const searchValue = useSelector((state: RootState) => state.searchValue)
 
   const dispatch = useDispatch()
@@ -20,7 +21,7 @@ const SearchPage = () => {
   type ApiProps = {
     author: string | undefined
     title: string | undefined
-    sortBy: 'relevance' | 'newest' | undefined
+    sortBy: string | undefined
     onlyFreeBooks: boolean | undefined
   }
 
@@ -50,10 +51,12 @@ const SearchPage = () => {
     axios
       .get(filters)
       .then((res) => {
-        const searchedBooks = res.data.items.map((item: any) => mapBook(item))
-        return searchedBooks
+        const GridBooks = res.data.items.map((item: GoogleBooksApiResponse) =>
+          mapBook(item)
+        )
+        return GridBooks
       })
-      .then((books) => dispatch(updateSearchedBooks(books)))
+      .then((books) => dispatch(updateGridBooks(books)))
       .catch((err) => console.error(err))
   }
 
@@ -158,7 +161,7 @@ const SearchPage = () => {
         </div>
       </div>
       <div className="searched-books-grid">
-        {searchedBooks.map(
+        {GridBooks.map(
           ({
             id,
             title,
@@ -169,7 +172,7 @@ const SearchPage = () => {
             ratingsCount,
             smallThumbnail,
           }) => (
-            <SearchedBook
+            <GridBook
               key={id}
               id={id}
               title={title}

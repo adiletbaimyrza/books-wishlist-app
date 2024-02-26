@@ -1,7 +1,20 @@
 import { RoutePageLayout } from '../components'
 
 const ReadPage = () => {
-  return <RoutePageLayout>ReadPage</RoutePageLayout>
+  let read: string[] = []
+  const readStringified = localStorage.getItem('read')
+
+  if (readStringified !== null) {
+    read = JSON.parse(readStringified)
+  }
+
+  return (
+    <RoutePageLayout>
+      {read.map((bookId) => (
+        <div>{bookId}</div>
+      ))}
+    </RoutePageLayout>
+  )
 }
 
 export default ReadPage

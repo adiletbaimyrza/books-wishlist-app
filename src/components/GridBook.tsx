@@ -1,9 +1,9 @@
 import { MAX_DESCRIPTION_LENGTH } from '../utils/constants'
 import { truncateDescription, undefinedCaseHandler } from '../utils/helpers'
-import { SearchedBookProps } from './components.types'
+import { GridBookProps } from './components.types'
 import { Link } from 'react-router-dom'
 
-const SearchedBook = ({
+const GridBook = ({
   id,
   title,
   authors,
@@ -11,7 +11,7 @@ const SearchedBook = ({
   description,
   averageRating,
   smallThumbnail,
-}: SearchedBookProps) => {
+}: GridBookProps) => {
   const formattedTitle = undefinedCaseHandler(title, 'title')
   const formattedAuthors = undefinedCaseHandler(authors, 'authors')
   const formattedPublishedDate = publishedDate
@@ -54,4 +54,4 @@ const SearchedBook = ({
   )
 }
 
-export default SearchedBook
+export default GridBook

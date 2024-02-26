@@ -10,7 +10,7 @@ type RoutePageLayoutProps = {
   children: React.ReactNode
 }
 
-type SearchedBookProps = {
+type GridBookProps = {
   id?: string
   title?: string
   authors?: string[]
@@ -21,4 +21,33 @@ type SearchedBookProps = {
   smallThumbnail?: string
 }
 
-export type { CustomNavLinkProps, RoutePageLayoutProps, SearchedBookProps }
+type GoogleBooksApiResponse = {
+  id: string
+  averageRating: number
+  volumeInfo: {
+    title: string
+    description: string
+    authors: string[]
+    publisher: string
+    publishedDate: string
+    imageLinks: {
+      thumbnail: string
+    }
+  }
+  saleInfo: {
+    buyLink: string
+  }
+  accessInfo: {
+    pdf: {
+      isAvailable: boolean
+      downloadLink: string
+    }
+  }
+}
+
+export type {
+  CustomNavLinkProps,
+  RoutePageLayoutProps,
+  GridBookProps,
+  GoogleBooksApiResponse,
+}

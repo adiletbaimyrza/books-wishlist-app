@@ -1,15 +1,21 @@
 // COMPONENTS
 import CustomNavLink from './CustomNavLink'
 import RoutePageLayout from './RoutePageLayout'
-import SearchedBook from './SearchedBook'
+import GridBook from './GridBook'
 
-export { CustomNavLink, RoutePageLayout, SearchedBook }
+export { CustomNavLink, RoutePageLayout, GridBook }
 
 // TYPES
 import {
   CustomNavLinkProps,
   RoutePageLayoutProps,
-  SearchedBookProps,
+  GridBookProps,
+  GoogleBooksApiResponse,
 } from './components.types'
 
-export type { CustomNavLinkProps, RoutePageLayoutProps, SearchedBookProps }
+export type {
+  CustomNavLinkProps,
+  RoutePageLayoutProps,
+  GridBookProps,
+  GoogleBooksApiResponse,
+}

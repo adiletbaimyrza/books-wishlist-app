@@ -9,10 +9,22 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 const NAV_LINKS: CustomNavLinkProps[] = [
-  { path: '/search', faIcon: faMagnifyingGlass, name: 'Search books' },
-  { path: '/favourites', faIcon: faStar, name: 'Favourites' },
-  { path: '/toread', faIcon: faBasketShopping, name: 'To read' },
-  { path: '/read', faIcon: faBookmark, name: 'Read' },
+  {
+    path: '/books-wishlist-app/search',
+    faIcon: faMagnifyingGlass,
+    name: 'Search books',
+  },
+  {
+    path: '/books-wishlist-app/favourites',
+    faIcon: faStar,
+    name: 'Favourites',
+  },
+  {
+    path: '/books-wishlist-app/toread',
+    faIcon: faBasketShopping,
+    name: 'To read',
+  },
+  { path: '/books-wishlist-app/read', faIcon: faBookmark, name: 'Read' },
 ]
 
 const HomePage = () => {

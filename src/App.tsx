@@ -12,33 +12,33 @@ import FeaturedPage from './pages/FeaturedPage'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/books-wishlist-app',
     element: <HomePage />,
     errorElement: <NotFoundPage />,
     children: [
       {
-        path: '/favourites',
+        path: '/books-wishlist-app/favourites',
         element: <FavouritesPage />,
       },
       {
-        path: '/toread',
+        path: '/books-wishlist-app/toread',
         element: <ToReadPage />,
       },
       {
-        path: '/read',
+        path: '/books-wishlist-app/read',
         element: <ReadPage />,
       },
       {
         index: true,
-        path: '/search',
+        path: '/books-wishlist-app/search',
         element: <SearchPage />,
       },
       {
-        path: '/:id',
+        path: '/books-wishlist-app/:id',
         element: <SingleBookPage />,
       },
       {
-        path: '/featured',
+        path: '/books-wishlist-app/featured',
         element: <FeaturedPage />,
       },
     ],

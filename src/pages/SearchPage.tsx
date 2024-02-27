@@ -1,96 +1,51 @@
 import axios from 'axios'
-import { ChangeEvent, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../redux/store'
-import { updateGridBooks, updateSearchValue } from '../redux'
+import { ChangeEvent, useState, useRef } from 'react'
 import { RoutePageLayout, GridBook } from '../components'
-import { MAX_ITEMS_PER_REQUEST, SEARCH_PLACEHOLDER } from '../utils/constants'
-
+import { SEARCH_PLACEHOLDER } from '../utils/constants'
 import Illustration from '../assets/boy-and-books-illustration.svg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 import { mapBook } from '../utils/mappers'
-import { GoogleBooksApiResponse } from '../components/components.types'
+import {
+  GoogleBooksApiResponse,
+  GridBookProps,
+} from '../components/components.types'
+import { fetchBooksWithParams } from '../utils/googleBooksApiService'
 
 const SearchPage = () => {
-  const GridBooks = useSelector((state: RootState) => state.GridBooks)
-  const searchValue = useSelector((state: RootState) => state.searchValue)
+  const [searchedBooks, setSearchedBooks] = useState<GridBookProps[]>([])
+  const [searchValue, setSearchValue] = useState<string>('')
   const [inputSuggestions, setInputSuggestions] = useState<string[]>([])
 
-  const dispatch = useDispatch()
+  const authorInputRef = useRef<HTMLInputElement>(null)
+  const titleInputRef = useRef<HTMLInputElement>(null)
+  const sortBySelectRef = useRef<HTMLSelectElement>(null)
+  const freeBooksCheckboxRef = useRef<HTMLInputElement>(null)
 
-  type ApiProps = {
-    author: string | undefined
-    title: string | undefined
-    sortBy: string | undefined
-    onlyFreeBooks: boolean | undefined
-  }
-
-  const fetchData = ({ author, title, sortBy, onlyFreeBooks }: ApiProps) => {
-    let filters = `https://www.googleapis.com/books/v1/volumes?q=${searchValue}`
-
-    if (author !== undefined) {
-      filters = filters.concat(`+inauthor:${author}`)
-    }
-
-    if (title !== undefined) {
-      filters = filters.concat(`+intitle:${title}`)
-    }
-
-    if (onlyFreeBooks === true) {
-      filters = filters.concat('&filter=free-ebooks')
-    }
-
-    if (sortBy !== undefined) {
-      filters = filters.concat(`&orderBy=${sortBy}`)
-    }
-
-    filters = filters.concat(`&maxResults=${MAX_ITEMS_PER_REQUEST}`)
-
-    console.log(filters)
-
-    axios
-      .get(filters)
-      .then((res) => {
-        const GridBooks = res.data.items.map((item: GoogleBooksApiResponse) =>
+  const fetchDataWithFilters = () => {
+    fetchBooksWithParams({
+      author: authorInputRef.current?.value,
+      title: titleInputRef.current?.value,
+      sortBy:
+        sortBySelectRef.current?.value === 'relevance' ||
+        sortBySelectRef.current?.value === 'newest'
+          ? sortBySelectRef.current?.value
+          : undefined,
+      onlyFreeBooks:
+        freeBooksCheckboxRef.current?.checked === true ? true : undefined,
+      q: searchValue,
+    })
+      .then((books) => {
+        const GridBooks = books.map((item: GoogleBooksApiResponse) =>
           mapBook(item)
         )
         return GridBooks
       })
-      .then((books) => dispatch(updateGridBooks(books)))
-      .catch((err) => console.error(err))
-  }
-
-  const fetchDataWithFilters = () => {
-    fetchData({
-      author:
-        (document.querySelector('#filter-author') as HTMLInputElement)?.value
-          .length > 0
-          ? (document.querySelector('#filter-author') as HTMLInputElement)
-              ?.value
-          : undefined,
-      title:
-        (document.querySelector('#filter-title') as HTMLInputElement)?.value
-          .length > 0
-          ? (document.querySelector('#filter-title') as HTMLInputElement)?.value
-          : undefined,
-      sortBy:
-        (document.querySelector('#sortby') as HTMLSelectElement)?.value ===
-          'relevance' ||
-        (document.querySelector('#sortby') as HTMLSelectElement)?.value ===
-          'newest'
-          ? (document.querySelector('#sortby') as HTMLSelectElement)?.value
-          : undefined,
-      onlyFreeBooks:
-        (document.querySelector('#filter-free') as HTMLInputElement)
-          ?.checked === true
-          ? true
-          : undefined,
-    })
+      .then((books) => setSearchedBooks(books))
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(updateSearchValue(event.target.value))
+    setSearchValue(event.target.value)
   }
 
   const handleEnterKeyPress = (
@@ -157,13 +112,17 @@ const SearchPage = () => {
         </div>
         <div className="search-filters">
           <div className="filters-item">
-            <input id="filter-free" className="filter-free" type="checkbox" />
+            <input
+              ref={freeBooksCheckboxRef}
+              className="filter-free"
+              type="checkbox"
+            />
             Only free books
           </div>
           <div className="filters-item">
             Filter by author:
             <input
-              id="filter-author"
+              ref={authorInputRef}
               type="text"
               className="filter-ins"
               onKeyPress={handleEnterKeyPress}
@@ -172,7 +131,7 @@ const SearchPage = () => {
           <div className="filters-item">
             Filter by title:
             <input
-              id="filter-title"
+              ref={titleInputRef}
               type="text"
               className="filter-ins"
               onKeyPress={handleEnterKeyPress}
@@ -180,7 +139,7 @@ const SearchPage = () => {
           </div>
           <div className="filters-item">
             Sort by:
-            <select id="sortby" className="filter-ins">
+            <select ref={sortBySelectRef} className="filter-ins">
               <option value="relevance">Relevance</option>
               <option value="newest">Newest</option>
             </select>
@@ -188,7 +147,7 @@ const SearchPage = () => {
         </div>
       </div>
       <div className="searched-books-grid">
-        {GridBooks.map(
+        {searchedBooks.map(
           ({
             id,
             title,

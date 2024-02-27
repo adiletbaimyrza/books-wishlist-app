@@ -5,9 +5,17 @@ import {
   faStar,
   faBookmark,
   faBasketShopping,
+  faHouse,
+  faHeart,
+  faComment,
 } from '@fortawesome/free-solid-svg-icons'
 
 const NAV_LINKS: CustomNavLinkProps[] = [
+  {
+    path: '/books-wishlist-app/home',
+    faIcon: faHouse,
+    name: 'Home',
+  },
   {
     path: '/books-wishlist-app/search/',
     faIcon: faMagnifyingGlass,
@@ -15,7 +23,7 @@ const NAV_LINKS: CustomNavLinkProps[] = [
   },
   {
     path: '/books-wishlist-app/favourites/',
-    faIcon: faStar,
+    faIcon: faHeart,
     name: 'Favourites',
   },
   {
@@ -24,6 +32,16 @@ const NAV_LINKS: CustomNavLinkProps[] = [
     name: 'To read',
   },
   { path: '/books-wishlist-app/read/', faIcon: faBookmark, name: 'Read' },
+  {
+    path: '/books-wishlist-app/recommended',
+    faIcon: faStar,
+    name: 'Recommended for you',
+  },
+  {
+    path: '/books-wishlist-app/reviews/',
+    faIcon: faComment,
+    name: 'Your reviews',
+  },
 ]
 
 const RoutePageLayout = ({ children }: RoutePageLayoutProps) => {

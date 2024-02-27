@@ -5,6 +5,8 @@ import SingleBookPage from './SingleBookPage'
 import ToReadPage from './ToReadPage'
 import NotFoundPage from './NotFoundPage'
 import SearchPage from './SearchPage'
+import RecommendedPage from './RecommendedPage'
+import ReviewsPage from './ReviewsPage'
 
 export {
   FavouritesPage,
@@ -14,4 +16,6 @@ export {
   ToReadPage,
   NotFoundPage,
   SearchPage,
+  RecommendedPage,
+  ReviewsPage,
 }

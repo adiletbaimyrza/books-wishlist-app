@@ -6,13 +6,14 @@ import {
   NotFoundPage,
   SearchPage,
   SingleBookPage,
+  ReviewsPage,
 } from './pages'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import FeaturedPage from './pages/FeaturedPage'
+import RecommendedPage from './pages/RecommendedPage'
 
 const router = createBrowserRouter([
   {
-    path: '/books-wishlist-app/',
+    path: '/books-wishlist-app/home',
     element: <HomePage />,
     errorElement: <NotFoundPage />,
   },
@@ -38,8 +39,12 @@ const router = createBrowserRouter([
     element: <SingleBookPage />,
   },
   {
-    path: '/books-wishlist-app/featured/',
-    element: <FeaturedPage />,
+    path: '/books-wishlist-app/recommended/',
+    element: <RecommendedPage />,
+  },
+  {
+    path: '/books-wishlist-app/reviews/',
+    element: <ReviewsPage />,
   },
 ])
 

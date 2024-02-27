@@ -1,16 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '../redux/store'
+import { updateFavourites, updateRead, updateToRead } from '../redux'
 import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 import {
-  getIdsFromLocalStorageByCollection,
+  getBooksFromLocalStorageByCollection,
   isInCollections,
-  updateIdsInLocalStorageByCollection,
+  updateBooksInLocalStorageByCollection,
 } from '../utils/localStorageService'
-import { Collection } from '../utils/localStorageService'
+import { CollectionType } from '../utils/localStorageService'
 
 const SingleBookPage = () => {
-  const [selectedOption, setSelectedOption] = useState<Collection>('favourites')
+  const favourites = useSelector((state: RootState) => state.favourites)
+  const toRead = useSelector((state: RootState) => state.toRead)
+  const read = useSelector((state: RootState) => state.read)
+  const dispatch = useDispatch()
+
+  const [selectedOption, setSelectedOption] =
+    useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
 
@@ -23,57 +32,57 @@ const SingleBookPage = () => {
   }, [])
 
   const addToCollections = () => {
-    const collections = getIdsFromLocalStorageByCollection(selectedOption)
+    const collections = getBooksFromLocalStorageByCollection(selectedOption)
     if (id) {
-      if (!collections.find((collectionId) => collectionId === id)) {
-        collections.push(id)
+      if (!collections.find((collectionItem) => collectionItem.id === id)) {
+        collections.push(singleBook as GoogleBooksApiResponse)
         // book added to a collection [NOTIFICATION]
       } else {
         // book is already in the collection, cannot add to collections [NOTIFICATION]
       }
     }
-    updateIdsInLocalStorageByCollection(selectedOption, collections)
+    updateBooksInLocalStorageByCollection(selectedOption, collections)
+    switch (selectedOption) {
+      case 'favourites':
+        dispatch(updateFavourites(collections))
+        break
+      case 'read':
+        dispatch(updateRead(collections))
+        break
+      case 'to read':
+        dispatch(updateToRead(collections))
+    }
   }
 
-  const removeFromCollections = () => {
-    const favouritesCollectionsRaw: string | null =
-      localStorage.getItem('favourites')
-    const toReadCollectionsRaw: string | null = localStorage.getItem('to read')
-    const readCollectionsRaw: string | null = localStorage.getItem('read')
+  const removeFromCollectionsNew = () => {
+    const { collectionType } = isInCollections(id as string)
 
-    let favoriteCollections: string[] =
-      favouritesCollectionsRaw !== null
-        ? JSON.parse(favouritesCollectionsRaw)
-        : []
-    let toReadCollections: string[] =
-      toReadCollectionsRaw !== null ? JSON.parse(toReadCollectionsRaw) : []
-    let readCollections: string[] =
-      readCollectionsRaw !== null ? JSON.parse(readCollectionsRaw) : []
-
-    if (id) {
-      if (favoriteCollections.find((collectionId) => collectionId === id)) {
-        favoriteCollections = favoriteCollections.filter(
-          (collectionId) => collectionId !== id
+    switch (collectionType) {
+      case 'favourites':
+        dispatch(updateFavourites(favourites.filter((item) => item.id !== id)))
+        updateBooksInLocalStorageByCollection(
+          'favourites',
+          favourites.filter((item) => item.id !== id)
         )
-        localStorage.setItem('favourites', JSON.stringify(favoriteCollections))
-      }
-      if (toReadCollections.find((collectionId) => collectionId === id)) {
-        toReadCollections = toReadCollections.filter(
-          (collectionId) => collectionId !== id
+        break
+      case 'read':
+        dispatch(updateRead(read.filter((item) => item.id !== id)))
+        updateBooksInLocalStorageByCollection(
+          'read',
+          read.filter((item) => item.id !== id)
         )
-        localStorage.setItem('to read', JSON.stringify(toReadCollections))
-      }
-      if (readCollections.find((collectionId) => collectionId === id)) {
-        readCollections = readCollections.filter(
-          (collectionId) => collectionId !== id
+        break
+      case 'to read':
+        dispatch(updateToRead(toRead.filter((item) => item.id !== id)))
+        updateBooksInLocalStorageByCollection(
+          'to read',
+          toRead.filter((item) => item.id !== id)
         )
-        localStorage.setItem('read', JSON.stringify(readCollections))
-      }
     }
   }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value as Collection)
+    setSelectedOption(event.target.value as CollectionType)
   }
 
   const formattedTitle = singleBook?.volumeInfo
@@ -146,13 +155,13 @@ const SingleBookPage = () => {
           <option value="read">read</option>
         </select>
       </div>
-      {id && isInCollections(id) && (
+      {id && isInCollections(id).isInCollection && (
         <div>
           <button
             className="remove-from-collections-button"
-            onClick={removeFromCollections}
+            onClick={removeFromCollectionsNew}
           >
-            REMOVE FROM {isInCollections(id).collection}
+            REMOVE FROM {isInCollections(id).collectionType}
           </button>
         </div>
       )}

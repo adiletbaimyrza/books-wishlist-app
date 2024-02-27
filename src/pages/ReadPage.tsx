@@ -8,7 +8,7 @@ import {
   GridBook,
 } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getIdsFromLocalStorageByCollection } from '../utils/localStorageService'
+import { getBooksFromLocalStorageByCollection } from '../utils/localStorageService'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 
 const ReadPage = () => {
@@ -16,12 +16,12 @@ const ReadPage = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const read = getIdsFromLocalStorageByCollection('read')
+    const read = getBooksFromLocalStorageByCollection('read')
 
     const fetchBooks = async () => {
       const readBooks: GoogleBooksApiResponse[] = []
       for (const r of read) {
-        const book = await fetchSingleBook(r)
+        const book = await fetchSingleBook(r.id as string)
         readBooks.push(book)
       }
       dispatch(updateRead(readBooks))

@@ -9,7 +9,7 @@ import {
 } from '../components'
 import {} from '../components'
 import { mapBook } from '../utils/mappers'
-import { getIdsFromLocalStorageByCollection } from '../utils/localStorageService'
+import { getBooksFromLocalStorageByCollection } from '../utils/localStorageService'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 
 const ToReadPage = () => {
@@ -17,12 +17,12 @@ const ToReadPage = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const toRead = getIdsFromLocalStorageByCollection('to read')
+    const toRead = getBooksFromLocalStorageByCollection('to read')
 
     const fetchBooks = async () => {
       const toReadBooks: GoogleBooksApiResponse[] = []
       for (const t of toRead) {
-        const book = await fetchSingleBook(t)
+        const book = await fetchSingleBook(t.id as string)
         toReadBooks.push(book)
       }
       dispatch(updateToRead(toReadBooks))

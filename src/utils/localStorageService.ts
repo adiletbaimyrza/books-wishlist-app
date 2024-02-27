@@ -1,62 +1,67 @@
-type Collection = 'favourites' | 'read' | 'to read'
+import { GoogleBooksApiResponse } from '../components'
 
-const getIdsFromLocalStorageByCollection = (
-  collection: Collection
-): string[] => {
-  const collectionString: string | null = localStorage.getItem(collection)
-  const collectionParsed: string[] =
+type CollectionType = 'favourites' | 'read' | 'to read'
+
+const getBooksFromLocalStorageByCollection = (
+  collectionType: CollectionType
+): GoogleBooksApiResponse[] => {
+  const collectionString: string | null = localStorage.getItem(collectionType)
+  const collectionParsed: GoogleBooksApiResponse[] =
     collectionString !== null ? JSON.parse(collectionString) : []
 
   return collectionParsed
 }
 
-const updateIdsInLocalStorageByCollection = (
-  collection: Collection,
-  newIds: string[]
+const updateBooksInLocalStorageByCollection = (
+  collectionType: CollectionType,
+  newBooks: GoogleBooksApiResponse[]
 ): void => {
-  localStorage.setItem(collection, JSON.stringify(newIds))
+  localStorage.setItem(collectionType, JSON.stringify(newBooks))
 }
 
-const isInCollection = (collectionName: Collection, id: string): boolean => {
-  const collection = getIdsFromLocalStorageByCollection(collectionName)
-  return id ? collection.includes(id) : false
+const isInCollection = (
+  collectionType: CollectionType,
+  id: string
+): boolean => {
+  const collection = getBooksFromLocalStorageByCollection(collectionType)
+  return id ? collection.some((item) => item.id === id) : false
 }
 
 type isInCollectionReturnType = {
   isInCollection: boolean
-  collection: Collection | null
+  collectionType: CollectionType | null
 }
 
 const isInCollections = (id: string): isInCollectionReturnType => {
   if (isInCollection('favourites', id)) {
     return {
       isInCollection: true,
-      collection: 'favourites',
+      collectionType: 'favourites',
     }
   }
   if (isInCollection('read', id)) {
     return {
       isInCollection: true,
-      collection: 'read',
+      collectionType: 'read',
     }
   }
   if (isInCollection('to read', id)) {
     return {
       isInCollection: true,
-      collection: 'to read',
+      collectionType: 'to read',
     }
   }
   return {
     isInCollection: false,
-    collection: null,
+    collectionType: null,
   }
 }
 
 export {
-  getIdsFromLocalStorageByCollection,
-  updateIdsInLocalStorageByCollection,
+  getBooksFromLocalStorageByCollection,
+  updateBooksInLocalStorageByCollection,
   isInCollection,
   isInCollections,
 }
 
-export type { isInCollectionReturnType, Collection }
+export type { isInCollectionReturnType, CollectionType }

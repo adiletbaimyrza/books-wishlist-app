@@ -8,7 +8,7 @@ import {
   GridBook,
 } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getIdsFromLocalStorageByCollection } from '../utils/localStorageService'
+import { getBooksFromLocalStorageByCollection } from '../utils/localStorageService'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 
 const FavouritesPage = () => {
@@ -16,13 +16,13 @@ const FavouritesPage = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const favourites = getIdsFromLocalStorageByCollection('favourites')
+    const favourites = getBooksFromLocalStorageByCollection('favourites')
 
     const fetchBooks = async () => {
       const favouriteBooks: GoogleBooksApiResponse[] = []
       for (const favId of favourites) {
         if (favId) {
-          const book = await fetchSingleBook(favId)
+          const book = await fetchSingleBook(favId.id as string)
           favouriteBooks.push(book)
         }
       }

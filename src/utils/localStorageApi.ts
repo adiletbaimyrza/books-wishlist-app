@@ -1,4 +1,4 @@
-type Collection = 'favourite' | 'read' | 'to read'
+type Collection = 'favourites' | 'read' | 'to read'
 
 const getIdsFromLocalStorageByCollection = (
   collection: Collection
@@ -10,4 +10,14 @@ const getIdsFromLocalStorageByCollection = (
   return collectionParsed
 }
 
-export { getIdsFromLocalStorageByCollection }
+const updateIdsInLocalStorageByCollection = (
+  collection: Collection,
+  newIds: string[]
+): void => {
+  localStorage.setItem(collection, JSON.stringify(newIds))
+}
+
+export {
+  getIdsFromLocalStorageByCollection,
+  updateIdsInLocalStorageByCollection,
+}

@@ -9,14 +9,14 @@ import {
   GridBook,
 } from '../components'
 import { mapBook } from '../utils/mappers'
+import { getIdsFromLocalStorageByCollection } from '../utils/localStorageApi'
 
 const FavouritesPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const favouritesRaw = localStorage.getItem('favourites')
-    const favourites = favouritesRaw !== null ? JSON.parse(favouritesRaw) : []
+    const favourites = getIdsFromLocalStorageByCollection('favourites')
 
     const fetchBooks = async () => {
       const favouriteBooks: GoogleBooksApiResponse[] = []

@@ -21,13 +21,16 @@ const FavouritesPage = () => {
     const fetchBooks = async () => {
       const favouriteBooks: GoogleBooksApiResponse[] = []
       for (const favId of favourites) {
-        fetchSingleBook(favId).then((book) => favouriteBooks.push(book))
+        if (favId) {
+          const book = await fetchSingleBook(favId)
+          favouriteBooks.push(book)
+        }
       }
       dispatch(updateFavourites(favouriteBooks))
     }
 
     fetchBooks()
-  }, [favourites, dispatch])
+  }, [dispatch])
 
   return (
     <RoutePageLayout>

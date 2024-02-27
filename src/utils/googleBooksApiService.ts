@@ -10,6 +10,16 @@ type FetchBooksParams = {
   q: string
 }
 
+const fetchBooksWithoutParams = async (
+  q: string
+): Promise<GoogleBooksApiResponse[]> => {
+  const res = await axios.get(
+    `https://www.googleapis.com/books/v1/volumes?q=${q}`
+  )
+
+  return res.data.items
+}
+
 const fetchBooksWithParams = async ({
   author,
   title,
@@ -44,4 +54,9 @@ const fetchSingleBook = async (id: string): Promise<GoogleBooksApiResponse> => {
   return res.data
 }
 
-export { fetchBooksWithParams, fetchRecommendedBooks, fetchSingleBook }
+export {
+  fetchBooksWithParams,
+  fetchRecommendedBooks,
+  fetchSingleBook,
+  fetchBooksWithoutParams,
+}

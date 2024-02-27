@@ -1,45 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import axios from 'axios'
-import { updateSingleBook } from '../redux'
-import { RootState } from '../redux/store'
-import { RoutePageLayout } from '../components'
+import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
+import { fetchSingleBook } from '../utils/googleBooksApiService'
+import {
+  getIdsFromLocalStorageByCollection,
+  isInCollections,
+  updateIdsInLocalStorageByCollection,
+} from '../utils/localStorageService'
+import { Collection } from '../utils/localStorageService'
 
 const SingleBookPage = () => {
-  const [selectedOption, setSelectedOption] = useState('favourites')
-  const singleBook = useSelector((state: RootState) => state.singleBook)
-  const dispatch = useDispatch()
+  const [selectedOption, setSelectedOption] = useState<Collection>('favourites')
+  const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
 
   useEffect(() => {
-    axios
-      .get(`https://www.googleapis.com/books/v1/volumes/${id}`)
-      .then((res) => dispatch(updateSingleBook(res.data)))
-      .catch((err) => console.error(err))
-  }, [id, dispatch])
+    if (id) {
+      fetchSingleBook(id)
+        .then((book) => setSingleBook(book))
+        .catch((err) => console.error(err))
+    }
+  }, [])
 
   const addToCollections = () => {
-    const collectionsRaw: string | null = localStorage.getItem(selectedOption)
-    const collections: string[] =
-      collectionsRaw !== null ? JSON.parse(collectionsRaw) : []
+    const collections = getIdsFromLocalStorageByCollection(selectedOption)
     if (id) {
       if (!collections.find((collectionId) => collectionId === id)) {
         collections.push(id)
+        // book added to a collection [NOTIFICATION]
+      } else {
+        // book is already in the collection, cannot add to collections [NOTIFICATION]
       }
     }
-    localStorage.setItem(selectedOption, JSON.stringify(collections))
-  }
-
-  const isInLocalStorage = (id: string | undefined): boolean => {
-    const collectionsNames = ['favourites', 'to read', 'read']
-
-    return collectionsNames.some((collectionName) => {
-      const collectionRaw: string | null = localStorage.getItem(collectionName)
-      const collection: string[] =
-        collectionRaw !== null ? JSON.parse(collectionRaw) : []
-      return id ? collection.includes(id) : false
-    })
+    updateIdsInLocalStorageByCollection(selectedOption, collections)
   }
 
   const removeFromCollections = () => {
@@ -80,28 +73,28 @@ const SingleBookPage = () => {
   }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedOption(event.target.value)
+    setSelectedOption(event.target.value as Collection)
   }
 
-  const formattedTitle = singleBook.volumeInfo
+  const formattedTitle = singleBook?.volumeInfo
     ? singleBook.volumeInfo.title
     : 'No title.'
 
   const formattedAuthors =
-    singleBook.volumeInfo && singleBook.volumeInfo.authors
+    singleBook?.volumeInfo && singleBook.volumeInfo.authors
       ? singleBook.volumeInfo?.authors.join(', ')
       : 'No authors.'
 
   const formattedPublishedDate =
-    singleBook.volumeInfo && singleBook.volumeInfo.publishedDate
+    singleBook?.volumeInfo && singleBook.volumeInfo.publishedDate
       ? new Date(singleBook.volumeInfo?.publishedDate).getFullYear()
       : 'No published date.'
 
-  const formattedPublisher = singleBook.volumeInfo
+  const formattedPublisher = singleBook?.volumeInfo
     ? singleBook.volumeInfo.publisher
     : 'No publishers.'
 
-  const formattedRating = singleBook.averageRating
+  const formattedRating = singleBook?.averageRating
     ? `${singleBook.averageRating} / 5.0`
     : 'No ratings.'
 
@@ -117,22 +110,22 @@ const SingleBookPage = () => {
           </div>
           <div className="sbp-rating">{formattedRating}</div>
 
-          <a className="sbp-link" href={singleBook.saleInfo?.buyLink}>
+          <a className="sbp-link" href={singleBook?.saleInfo?.buyLink}>
             Buy
           </a>
           <a
             className="sbp-link"
-            href={singleBook.accessInfo?.pdf?.downloadLink}
+            href={singleBook?.accessInfo?.pdf?.downloadLink}
           >
             Download
           </a>
         </div>
         <div className="sbp-main-thumbnail">
-          <img src={singleBook.volumeInfo?.imageLinks?.thumbnail}></img>
+          <img src={singleBook?.volumeInfo?.imageLinks?.thumbnail}></img>
         </div>
       </div>
       <div className="sbp-description">
-        {singleBook.volumeInfo?.description}
+        {singleBook?.volumeInfo?.description}
       </div>
       <div className="sbp-review"></div>
       <div className="sbp-controls">
@@ -153,13 +146,13 @@ const SingleBookPage = () => {
           <option value="read">read</option>
         </select>
       </div>
-      {isInLocalStorage(id) && (
+      {id && isInCollections(id) && (
         <div>
           <button
             className="remove-from-collections-button"
             onClick={removeFromCollections}
           >
-            REMOVE FROM COLLECTIONS
+            REMOVE FROM {isInCollections(id).collection}
           </button>
         </div>
       )}

@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { ChangeEvent, useState, useRef } from 'react'
 import { RoutePageLayout, GridBook } from '../components'
 import { SEARCH_PLACEHOLDER } from '../utils/constants'
@@ -10,7 +9,10 @@ import {
   GoogleBooksApiResponse,
   GridBookProps,
 } from '../components/components.types'
-import { fetchBooksWithParams } from '../utils/googleBooksApiService'
+import {
+  fetchBooksWithParams,
+  fetchBooksWithoutParams,
+} from '../utils/googleBooksApiService'
 
 const SearchPage = () => {
   const [searchedBooks, setSearchedBooks] = useState<GridBookProps[]>([])
@@ -44,8 +46,21 @@ const SearchPage = () => {
       .then((books) => setSearchedBooks(books))
   }
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const updateSearchValue = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value)
+  }
+
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    updateSearchValue(e)
+
+    if (e.target.value.length > 0) {
+      fetchBooksWithoutParams(e.target.value).then((books): void => {
+        const suggestions = books
+          .map((item: GoogleBooksApiResponse) => item.volumeInfo?.title)
+          .filter((title): title is string => title !== undefined)
+        setInputSuggestions(suggestions)
+      })
+    }
   }
 
   const handleEnterKeyPress = (
@@ -66,22 +81,7 @@ const SearchPage = () => {
         <div className="search-field">
           <input
             value={searchValue}
-            onChange={(e) => {
-              handleInputChange(e)
-
-              if (e.target.value.length > 0) {
-                axios
-                  .get(
-                    `https://www.googleapis.com/books/v1/volumes?q=${e.target.value}`
-                  )
-                  .then((res): void => {
-                    const suggestions = res.data.items.map(
-                      (item: GoogleBooksApiResponse) => item.volumeInfo?.title
-                    )
-                    setInputSuggestions(suggestions)
-                  })
-              }
-            }}
+            onChange={handleSearchInputChange}
             className="search"
             type="search"
             id="search"

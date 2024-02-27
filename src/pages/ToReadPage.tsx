@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateToRead } from '../redux'
-import axios from 'axios'
 import {
   RoutePageLayout,
   GoogleBooksApiResponse,
@@ -10,28 +9,27 @@ import {
 } from '../components'
 import {} from '../components'
 import { mapBook } from '../utils/mappers'
+import { getIdsFromLocalStorageByCollection } from '../utils/localStorageService'
+import { fetchSingleBook } from '../utils/googleBooksApiService'
 
 const ToReadPage = () => {
   const toRead = useSelector((state: RootState) => state.toRead)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const toReadRaw = localStorage.getItem('to read')
-    const toRead = toReadRaw !== null ? JSON.parse(toReadRaw) : []
+    const toRead = getIdsFromLocalStorageByCollection('to read')
 
     const fetchBooks = async () => {
       const toReadBooks: GoogleBooksApiResponse[] = []
       for (const t of toRead) {
-        const res = await axios.get(
-          `https://www.googleapis.com/books/v1/volumes/${t}`
-        )
-        toReadBooks.push(res.data)
+        const book = await fetchSingleBook(t)
+        toReadBooks.push(book)
       }
       dispatch(updateToRead(toReadBooks))
     }
 
     fetchBooks()
-  }, [toRead, dispatch])
+  }, [dispatch])
 
   return (
     <RoutePageLayout>

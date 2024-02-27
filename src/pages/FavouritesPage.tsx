@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateFavourites } from '../redux'
-import axios from 'axios'
 import {
   RoutePageLayout,
   GoogleBooksApiResponse,
   GridBook,
 } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getIdsFromLocalStorageByCollection } from '../utils/localStorageApi'
+import { getIdsFromLocalStorageByCollection } from '../utils/localStorageService'
+import { fetchSingleBook } from '../utils/googleBooksApiService'
 
 const FavouritesPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -21,10 +21,7 @@ const FavouritesPage = () => {
     const fetchBooks = async () => {
       const favouriteBooks: GoogleBooksApiResponse[] = []
       for (const favId of favourites) {
-        const res = await axios.get(
-          `https://www.googleapis.com/books/v1/volumes/${favId}`
-        )
-        favouriteBooks.push(res.data)
+        fetchSingleBook(favId).then((book) => favouriteBooks.push(book))
       }
       dispatch(updateFavourites(favouriteBooks))
     }

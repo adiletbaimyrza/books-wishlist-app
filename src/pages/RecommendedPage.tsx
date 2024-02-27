@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import {
   RoutePageLayout,
   GoogleBooksApiResponse,
   GridBook,
 } from '../components'
 import { mapBook } from '../utils/mappers'
+import { fetchRecommendedBooks } from '../utils/googleBooksApiService'
 
 const RecommendedPage = () => {
   const [recommended, setRecommended] = useState<GoogleBooksApiResponse[]>([])
 
   useEffect(() => {
-    axios
-      .get(
-        `https://www.googleapis.com/books/v1/volumes?q=subject:fantasy&maxResults=40`
-      )
-      .then((res) => setRecommended(res.data.items))
+    fetchRecommendedBooks().then((books) => setRecommended(books))
   }, [])
 
   return (

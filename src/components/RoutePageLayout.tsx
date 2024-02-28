@@ -35,7 +35,7 @@ const NAV_LINKS: CustomNavLinkProps[] = [
   {
     path: '/books-wishlist-app/recommended',
     faIcon: faStar,
-    name: 'Recommended for you',
+    name: 'Recommended books',
   },
   {
     path: '/books-wishlist-app/reviews/',

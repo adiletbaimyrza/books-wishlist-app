@@ -1,30 +1,32 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
-import {
-  RoutePageLayout,
-  GoogleBooksApiResponse,
-  GridBook,
-} from '../components'
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../redux/store'
+import { RoutePageLayout, GridBook } from '../components'
 import { mapBook } from '../utils/mappers'
+import { fetchRecommendedBooks } from '../utils/googleBooksApiService'
+import { updateRecommendedBooks } from '../redux'
 
 const RecommendedPage = () => {
-  const [recommended, setRecommended] = useState<GoogleBooksApiResponse[]>([])
+  const recommendedBooks = useSelector(
+    (state: RootState) => state.recommendedBooks
+  )
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    axios
-      .get(
-        `https://www.googleapis.com/books/v1/volumes?q=subject:fantasy&maxResults=40`
+    if (recommendedBooks.length === 0) {
+      fetchRecommendedBooks().then((fetchedBooks) =>
+        dispatch(updateRecommendedBooks(fetchedBooks))
       )
-      .then((res) => setRecommended(res.data.items))
-  }, [])
+    }
+  }, [dispatch, recommendedBooks.length])
 
   return (
     <RoutePageLayout>
       <h1 className="grand-title">Recommended for you</h1>
-      {recommended.length !== 0 ? (
+      {recommendedBooks.length !== 0 ? (
         <div className="searched-books-grid">
-          {recommended.map((boo) => {
-            const book = mapBook(boo)
+          {recommendedBooks.map((recommendedBook) => {
+            const book = mapBook(recommendedBook)
             return (
               <GridBook
                 key={book.id}

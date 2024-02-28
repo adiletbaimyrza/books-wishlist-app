@@ -1,14 +1,14 @@
-import { updateGridBooks } from './gridBookSlice'
+import { updateSearchedBooks } from './searchedBooksSlice'
 import { updateSearchValue } from './searchValueSlice'
-import { updateSingleBook } from './singleBookSlice'
+import { updateRecommendedBooks } from './recommendedBooksSlice'
 import { updateFavourites } from './favouritesSlice'
 import { updateRead } from './readSlice'
 import { updateToRead } from './toReadSlice'
 
 export {
-  updateGridBooks,
+  updateSearchedBooks,
   updateSearchValue,
-  updateSingleBook,
+  updateRecommendedBooks,
   updateFavourites,
   updateRead,
   updateToRead,

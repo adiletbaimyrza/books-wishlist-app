@@ -2,33 +2,17 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateToRead } from '../redux'
-import {
-  RoutePageLayout,
-  GoogleBooksApiResponse,
-  GridBook,
-} from '../components'
+import { RoutePageLayout, GridBook } from '../components'
 import {} from '../components'
 import { mapBook } from '../utils/mappers'
-import { getBooksFromLocalStorageByCollection } from '../utils/localStorageService'
-import { fetchSingleBook } from '../utils/googleBooksApiService'
+import { getBooksFromLocalStorage } from '../utils/localStorageService'
 
 const ToReadPage = () => {
   const toRead = useSelector((state: RootState) => state.toRead)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const toRead = getBooksFromLocalStorageByCollection('to read')
-
-    const fetchBooks = async () => {
-      const toReadBooks: GoogleBooksApiResponse[] = []
-      for (const t of toRead) {
-        const book = await fetchSingleBook(t.id as string)
-        toReadBooks.push(book)
-      }
-      dispatch(updateToRead(toReadBooks))
-    }
-
-    fetchBooks()
+    dispatch(updateToRead(getBooksFromLocalStorage('to read')))
   }, [dispatch])
 
   return (
@@ -36,8 +20,8 @@ const ToReadPage = () => {
       <h1 className="grand-title">Your To Read Books</h1>
       {toRead.length !== 0 ? (
         <div className="searched-books-grid">
-          {toRead.map((tore) => {
-            const book = mapBook(tore)
+          {toRead.map((toReadBook) => {
+            const book = mapBook(toReadBook)
             return (
               <GridBook
                 key={book.id}

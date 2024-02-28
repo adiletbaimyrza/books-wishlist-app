@@ -2,34 +2,16 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateFavourites } from '../redux'
-import {
-  RoutePageLayout,
-  GoogleBooksApiResponse,
-  GridBook,
-} from '../components'
+import { RoutePageLayout, GridBook } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getBooksFromLocalStorageByCollection } from '../utils/localStorageService'
-import { fetchSingleBook } from '../utils/googleBooksApiService'
+import { getBooksFromLocalStorage } from '../utils/localStorageService'
 
 const FavouritesPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const favourites = getBooksFromLocalStorageByCollection('favourites')
-
-    const fetchBooks = async () => {
-      const favouriteBooks: GoogleBooksApiResponse[] = []
-      for (const favId of favourites) {
-        if (favId) {
-          const book = await fetchSingleBook(favId.id as string)
-          favouriteBooks.push(book)
-        }
-      }
-      dispatch(updateFavourites(favouriteBooks))
-    }
-
-    fetchBooks()
+    dispatch(updateFavourites(getBooksFromLocalStorage('favourites')))
   }, [dispatch])
 
   return (
@@ -37,8 +19,8 @@ const FavouritesPage = () => {
       <h1 className="grand-title">Your favourites</h1>
       {favourites.length !== 0 ? (
         <div className="searched-books-grid">
-          {favourites.map((boo) => {
-            const book = mapBook(boo)
+          {favourites.map((favouriteBook) => {
+            const book = mapBook(favouriteBook)
             return (
               <GridBook
                 key={book.id}

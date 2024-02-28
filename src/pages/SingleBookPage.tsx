@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
@@ -6,7 +6,7 @@ import { updateFavourites, updateRead, updateToRead } from '../redux'
 import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 import {
-  getBooksFromLocalStorageByCollection,
+  getBooksFromLocalStorage,
   isInCollections,
   updateBooksInLocalStorageByCollection,
 } from '../utils/localStorageService'
@@ -22,6 +22,7 @@ const SingleBookPage = () => {
     useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
+  const reviewInputRef = useRef<HTMLInputElement>()
 
   useEffect(() => {
     if (id) {
@@ -32,7 +33,7 @@ const SingleBookPage = () => {
   }, [])
 
   const addToCollections = () => {
-    const collections = getBooksFromLocalStorageByCollection(selectedOption)
+    const collections = getBooksFromLocalStorage(selectedOption)
     if (id) {
       if (!collections.find((collectionItem) => collectionItem.id === id)) {
         collections.push(singleBook as GoogleBooksApiResponse)
@@ -54,7 +55,7 @@ const SingleBookPage = () => {
     }
   }
 
-  const removeFromCollectionsNew = () => {
+  const removeFromCollections = () => {
     const { collectionType } = isInCollections(id as string)
 
     switch (collectionType) {
@@ -78,6 +79,16 @@ const SingleBookPage = () => {
           'to read',
           toRead.filter((item) => item.id !== id)
         )
+    }
+  }
+
+  const addReview = () => {
+    console.log(reviewInputRef.current?.value)
+    if (singleBook && reviewInputRef.current) {
+      setSingleBook({
+        ...singleBook,
+        review: reviewInputRef.current.value,
+      })
     }
   }
 
@@ -159,10 +170,17 @@ const SingleBookPage = () => {
         <div>
           <button
             className="remove-from-collections-button"
-            onClick={removeFromCollectionsNew}
+            onClick={removeFromCollections}
           >
-            REMOVE FROM {isInCollections(id).collectionType}
+            Remove from {isInCollections(id).collectionType}
           </button>
+          <button
+            className="remove-from-collections-button"
+            onClick={addReview}
+          >
+            Add review
+          </button>
+          <input ref={reviewInputRef}></input>
         </div>
       )}
     </RoutePageLayout>

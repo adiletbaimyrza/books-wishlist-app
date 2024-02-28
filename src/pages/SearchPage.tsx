@@ -1,22 +1,24 @@
 import { ChangeEvent, useState, useRef } from 'react'
+import { RootState } from '../redux/store'
+import { useSelector, useDispatch } from 'react-redux'
+import { updateSearchedBooks, updateSearchValue } from '../redux'
 import { RoutePageLayout, GridBook } from '../components'
 import { SEARCH_PLACEHOLDER } from '../utils/constants'
-import Illustration from '../assets/boy-and-books-illustration.svg'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { mapBook } from '../utils/mappers'
-import {
-  GoogleBooksApiResponse,
-  GridBookProps,
-} from '../components/components.types'
 import {
   fetchBooksWithParams,
   fetchBooksWithoutParams,
 } from '../utils/googleBooksApiService'
+import { GoogleBooksApiResponse } from '../components/components.types'
+
+import Illustration from '../assets/boy-and-books-illustration.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 const SearchPage = () => {
-  const [searchedBooks, setSearchedBooks] = useState<GridBookProps[]>([])
-  const [searchValue, setSearchValue] = useState<string>('')
+  const searchedBooks = useSelector((state: RootState) => state.searchedBooks)
+  const searchValue = useSelector((state: RootState) => state.searchValue)
+  const dispatch = useDispatch()
+
   const [inputSuggestions, setInputSuggestions] = useState<string[]>([])
 
   const authorInputRef = useRef<HTMLInputElement>(null)
@@ -36,22 +38,11 @@ const SearchPage = () => {
       onlyFreeBooks:
         freeBooksCheckboxRef.current?.checked === true ? true : undefined,
       q: searchValue,
-    })
-      .then((books) => {
-        const GridBooks = books.map((item: GoogleBooksApiResponse) =>
-          mapBook(item)
-        )
-        return GridBooks
-      })
-      .then((books) => setSearchedBooks(books))
-  }
-
-  const updateSearchValue = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value)
+    }).then((fetchedBooks) => dispatch(updateSearchedBooks(fetchedBooks)))
   }
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    updateSearchValue(e)
+    dispatch(updateSearchValue(e.target.value))
 
     if (e.target.value.length > 0) {
       fetchBooksWithoutParams(e.target.value).then((books): void => {
@@ -147,28 +138,18 @@ const SearchPage = () => {
         </div>
       </div>
       <div className="searched-books-grid">
-        {searchedBooks.map(
-          ({
-            id,
-            title,
-            authors,
-            publishedDate,
-            description,
-            averageRating,
-            smallThumbnail,
-          }) => (
-            <GridBook
-              key={id}
-              id={id}
-              title={title}
-              authors={authors}
-              publishedDate={publishedDate}
-              description={description}
-              averageRating={averageRating}
-              smallThumbnail={smallThumbnail}
-            />
-          )
-        )}
+        {searchedBooks.map((book) => (
+          <GridBook
+            key={book.id}
+            id={book.id}
+            title={book.volumeInfo?.title}
+            authors={book.volumeInfo?.authors}
+            publishedDate={book.volumeInfo?.publishedDate}
+            description={book.volumeInfo?.description}
+            averageRating={book.volumeInfo?.averageRating}
+            smallThumbnail={book.volumeInfo?.imageLinks?.smallThumbnail}
+          />
+        ))}
       </div>
     </RoutePageLayout>
   )

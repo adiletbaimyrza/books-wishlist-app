@@ -5,4 +5,6 @@ type Route = {
   errorElement?: React.ReactNode
 }
 
-export type { Route }
+type CollectionType = 'favourites' | 'read' | 'to read'
+
+export type { Route, CollectionType }

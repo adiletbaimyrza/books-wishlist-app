@@ -1,11 +1,12 @@
-// COMPONENTS
+// components
 import CustomNavLink from './CustomNavLink'
 import RoutePageLayout from './RoutePageLayout'
 import GridBook from './GridBook'
+import Review from './Review'
 
-export { CustomNavLink, RoutePageLayout, GridBook }
+export { CustomNavLink, RoutePageLayout, GridBook, Review }
 
-// TYPES
+// types
 import {
   CustomNavLinkProps,
   RoutePageLayoutProps,

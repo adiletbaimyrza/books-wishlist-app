@@ -20,10 +20,14 @@ type GridBookProps = {
   smallThumbnail?: string
 }
 
+type ReviewProps = {
+  book: GoogleBooksApiResponse
+}
+
 type GoogleBooksApiResponse = {
   id?: string
   review?: string
-
+  reviewTitle?: string
   averageRating?: number
   volumeInfo?: {
     title?: string
@@ -53,4 +57,5 @@ export type {
   RoutePageLayoutProps,
   GridBookProps,
   GoogleBooksApiResponse,
+  ReviewProps,
 }

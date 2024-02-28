@@ -22,15 +22,24 @@ const SingleBookPage = () => {
     useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
-  const reviewInputRef = useRef<HTMLInputElement>()
+  const reviewInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (id) {
-      fetchSingleBook(id)
-        .then((book) => setSingleBook(book))
-        .catch((err) => console.error(err))
+      const { isInCollection, collectionType } = isInCollections(id)
+      if (isInCollection) {
+        const collection = getBooksFromLocalStorage(
+          collectionType as CollectionType
+        )
+        const book = collection.find((book) => book.id === id)
+        setSingleBook(book)
+      } else {
+        fetchSingleBook(id)
+          .then((book) => setSingleBook(book))
+          .catch((err) => console.error(err))
+      }
     }
-  }, [])
+  }, [id])
 
   const addToCollections = () => {
     const collections = getBooksFromLocalStorage(selectedOption)
@@ -83,12 +92,41 @@ const SingleBookPage = () => {
   }
 
   const addReview = () => {
-    console.log(reviewInputRef.current?.value)
     if (singleBook && reviewInputRef.current) {
-      setSingleBook({
+      const updatedBook = {
         ...singleBook,
         review: reviewInputRef.current.value,
-      })
+      }
+      setSingleBook(updatedBook)
+
+      const { collectionType } = isInCollections(singleBook.id as string)
+      let updatedCollection: GoogleBooksApiResponse[] = []
+
+      switch (collectionType) {
+        case 'favourites':
+          updatedCollection = favourites.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateFavourites(updatedCollection))
+          break
+        case 'read':
+          updatedCollection = read.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateRead(updatedCollection))
+          break
+        case 'to read':
+          updatedCollection = toRead.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateToRead(updatedCollection))
+          break
+      }
+
+      updateBooksInLocalStorageByCollection(
+        collectionType as CollectionType,
+        updatedCollection
+      )
     }
   }
 
@@ -181,6 +219,7 @@ const SingleBookPage = () => {
             Add review
           </button>
           <input ref={reviewInputRef}></input>
+          <div>{singleBook?.review}</div>
         </div>
       )}
     </RoutePageLayout>

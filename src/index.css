@@ -329,6 +329,7 @@ body,
 
 .small-frame {
   max-width: 900px;
+  min-width: 900px;
   margin: 0 auto;
 }
 
@@ -388,8 +389,7 @@ body,
 }
 
 .review-card {
-  text-decoration: none;
-  color: inherit;
+  position: relative;
   border: 1px solid #757575;
   margin-bottom: 50px;
   padding: 20px;
@@ -399,6 +399,8 @@ body,
 
 .review-title {
   margin-bottom: 30px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .review-title:hover {
@@ -407,7 +409,79 @@ body,
 
 .review-text {
   padding: 10px;
-  border: 1px solid #757575;
+}
+
+.review-buttons {
+  display: none;
+  position: absolute;
+}
+
+.review-card:hover .review-buttons {
+  display: block;
+  right: 10px;
+  top: 10px;
+}
+
+.edit-button {
+  background-color: #0c8ce9;
+}
+
+.edit-button:hover {
+  background-color: #0a71bb;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: #e98072;
+}
+
+.delete-button:hover {
+  background-color: rgb(160, 80, 70);
+  cursor: pointer;
+}
+
+.edit-button,
+.delete-button {
+  color: inherit;
+  padding: 8px 10px;
+  margin-left: 10px;
   border-radius: 8px;
+  border: none;
+}
+
+.modal {
+  position: absolute;
+  background-color: #414141;
+  color: inherit;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-textarea {
   background-color: #2c2c2c;
+  color: white;
+  padding: 10px;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.submit-review {
+  padding: 8px 10px;
+  background-color: #8a38f5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+.submit-review:hover {
+  background-color: #6f26ce;
+  cursor: pointer;
 }

@@ -22,7 +22,7 @@ const SingleBookPage = () => {
     useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
-  const reviewInputRef = useRef<HTMLInputElement>()
+  const reviewInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (id) {
@@ -210,6 +210,7 @@ const SingleBookPage = () => {
             Add review
           </button>
           <input ref={reviewInputRef}></input>
+          <div>{singleBook?.review}</div>
         </div>
       )}
     </RoutePageLayout>

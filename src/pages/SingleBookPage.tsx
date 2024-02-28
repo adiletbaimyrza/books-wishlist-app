@@ -26,11 +26,20 @@ const SingleBookPage = () => {
 
   useEffect(() => {
     if (id) {
-      fetchSingleBook(id)
-        .then((book) => setSingleBook(book))
-        .catch((err) => console.error(err))
+      const { isInCollection, collectionType } = isInCollections(id)
+      if (isInCollection) {
+        const collection = getBooksFromLocalStorage(
+          collectionType as CollectionType
+        )
+        const book = collection.find((book) => book.id === id)
+        setSingleBook(book)
+      } else {
+        fetchSingleBook(id)
+          .then((book) => setSingleBook(book))
+          .catch((err) => console.error(err))
+      }
     }
-  }, [])
+  }, [id])
 
   const addToCollections = () => {
     const collections = getBooksFromLocalStorage(selectedOption)

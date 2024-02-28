@@ -5,12 +5,8 @@ import { RootState } from '../redux/store'
 import { updateFavourites, updateRead, updateToRead } from '../redux'
 import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
-import {
-  getBooksFromLocalStorage,
-  isInCollections,
-  updateBooksInLocalStorageByCollection,
-} from '../utils/localStorageService'
 import { CollectionType } from '../utils/localStorageService'
+import storage from '../utils/localStorageService'
 
 const SingleBookPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -26,11 +22,9 @@ const SingleBookPage = () => {
 
   useEffect(() => {
     if (id) {
-      const { isInCollection, collectionType } = isInCollections(id)
+      const { isInCollection, collectionType } = storage.isInCollections(id)
       if (isInCollection) {
-        const collection = getBooksFromLocalStorage(
-          collectionType as CollectionType
-        )
+        const collection = storage.getBooks(collectionType as CollectionType)
         const book = collection.find((book) => book.id === id)
         setSingleBook(book)
       } else {
@@ -42,7 +36,7 @@ const SingleBookPage = () => {
   }, [id])
 
   const addToCollections = () => {
-    const collections = getBooksFromLocalStorage(selectedOption)
+    const collections = storage.getBooks(selectedOption)
     if (id) {
       if (!collections.find((collectionItem) => collectionItem.id === id)) {
         collections.push(singleBook as GoogleBooksApiResponse)
@@ -51,7 +45,7 @@ const SingleBookPage = () => {
         // book is already in the collection, cannot add to collections [NOTIFICATION]
       }
     }
-    updateBooksInLocalStorageByCollection(selectedOption, collections)
+    storage.updateBooks(selectedOption, collections)
     switch (selectedOption) {
       case 'favourites':
         dispatch(updateFavourites(collections))
@@ -65,26 +59,26 @@ const SingleBookPage = () => {
   }
 
   const removeFromCollections = () => {
-    const { collectionType } = isInCollections(id as string)
+    const { collectionType } = storage.isInCollections(id as string)
 
     switch (collectionType) {
       case 'favourites':
         dispatch(updateFavourites(favourites.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'favourites',
           favourites.filter((item) => item.id !== id)
         )
         break
       case 'read':
         dispatch(updateRead(read.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'read',
           read.filter((item) => item.id !== id)
         )
         break
       case 'to read':
         dispatch(updateToRead(toRead.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'to read',
           toRead.filter((item) => item.id !== id)
         )
@@ -99,7 +93,9 @@ const SingleBookPage = () => {
       }
       setSingleBook(updatedBook)
 
-      const { collectionType } = isInCollections(singleBook.id as string)
+      const { collectionType } = storage.isInCollections(
+        singleBook.id as string
+      )
       let updatedCollection: GoogleBooksApiResponse[] = []
 
       switch (collectionType) {
@@ -123,10 +119,7 @@ const SingleBookPage = () => {
           break
       }
 
-      updateBooksInLocalStorageByCollection(
-        collectionType as CollectionType,
-        updatedCollection
-      )
+      storage.updateBooks(collectionType as CollectionType, updatedCollection)
     }
   }
 
@@ -204,13 +197,13 @@ const SingleBookPage = () => {
           <option value="read">read</option>
         </select>
       </div>
-      {id && isInCollections(id).isInCollection && (
+      {id && storage.isInCollections(id).isInCollection && (
         <div>
           <button
             className="remove-from-collections-button"
             onClick={removeFromCollections}
           >
-            Remove from {isInCollections(id).collectionType}
+            Remove from {storage.isInCollections(id).collectionType}
           </button>
           <button
             className="remove-from-collections-button"

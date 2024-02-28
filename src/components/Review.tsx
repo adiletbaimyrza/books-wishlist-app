@@ -4,12 +4,11 @@ import { RootState } from '../redux/store'
 import { updateFavourites, updateToRead, updateRead } from '../redux'
 import { Link } from 'react-router-dom'
 import { GoogleBooksApiResponse, ReviewProps } from './components.types'
-import { updateBooksInLocalStorageByCollection } from '../utils/localStorageService'
 import { CollectionType } from '../utils/utils.types'
-import { isInCollections } from '../utils/localStorageService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from '@mui/material'
+import storage from '../utils/localStorageService'
 
 const Review = ({ book }: ReviewProps) => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -33,7 +32,7 @@ const Review = ({ book }: ReviewProps) => {
   }
 
   const editReviewSubmitHandler = () => {
-    const { collectionType } = isInCollections(book.id as string)
+    const { collectionType } = storage.isInCollections(book.id as string)
     let updatedCollection: GoogleBooksApiResponse[] = []
 
     const updatedBook = { ...book, review: reviewValue }
@@ -59,16 +58,13 @@ const Review = ({ book }: ReviewProps) => {
         break
     }
 
-    updateBooksInLocalStorageByCollection(
-      collectionType as CollectionType,
-      updatedCollection
-    )
+    storage.updateBooks(collectionType as CollectionType, updatedCollection)
 
     handleClose()
   }
 
   const deleteReviewHandler = () => {
-    const { collectionType } = isInCollections(book.id as string)
+    const { collectionType } = storage.isInCollections(book.id as string)
     let updatedCollection: GoogleBooksApiResponse[] = []
 
     const updatedBook = { ...book, review: undefined }
@@ -94,10 +90,7 @@ const Review = ({ book }: ReviewProps) => {
         break
     }
 
-    updateBooksInLocalStorageByCollection(
-      collectionType as CollectionType,
-      updatedCollection
-    )
+    storage.updateBooks(collectionType as CollectionType, updatedCollection)
   }
 
   return (

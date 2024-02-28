@@ -83,12 +83,41 @@ const SingleBookPage = () => {
   }
 
   const addReview = () => {
-    console.log(reviewInputRef.current?.value)
     if (singleBook && reviewInputRef.current) {
-      setSingleBook({
+      const updatedBook = {
         ...singleBook,
         review: reviewInputRef.current.value,
-      })
+      }
+      setSingleBook(updatedBook)
+
+      const { collectionType } = isInCollections(singleBook.id as string)
+      let updatedCollection: GoogleBooksApiResponse[] = []
+
+      switch (collectionType) {
+        case 'favourites':
+          updatedCollection = favourites.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateFavourites(updatedCollection))
+          break
+        case 'read':
+          updatedCollection = read.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateRead(updatedCollection))
+          break
+        case 'to read':
+          updatedCollection = toRead.map((book) =>
+            book.id === singleBook.id ? updatedBook : book
+          )
+          dispatch(updateToRead(updatedCollection))
+          break
+      }
+
+      updateBooksInLocalStorageByCollection(
+        collectionType as CollectionType,
+        updatedCollection
+      )
     }
   }
 

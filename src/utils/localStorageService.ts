@@ -2,7 +2,7 @@ import { GoogleBooksApiResponse } from '../components'
 
 type CollectionType = 'favourites' | 'read' | 'to read'
 
-const getBooksFromLocalStorageByCollection = (
+const getBooksFromLocalStorage = (
   collectionType: CollectionType
 ): GoogleBooksApiResponse[] => {
   const collectionString: string | null = localStorage.getItem(collectionType)
@@ -23,7 +23,7 @@ const isInCollection = (
   collectionType: CollectionType,
   id: string
 ): boolean => {
-  const collection = getBooksFromLocalStorageByCollection(collectionType)
+  const collection = getBooksFromLocalStorage(collectionType)
   return id ? collection.some((item) => item.id === id) : false
 }
 
@@ -58,7 +58,7 @@ const isInCollections = (id: string): isInCollectionReturnType => {
 }
 
 export {
-  getBooksFromLocalStorageByCollection,
+  getBooksFromLocalStorage,
   updateBooksInLocalStorageByCollection,
   isInCollection,
   isInCollections,

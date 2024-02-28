@@ -22,6 +22,8 @@ type GridBookProps = {
 
 type GoogleBooksApiResponse = {
   id?: string
+  review?: string
+
   averageRating?: number
   volumeInfo?: {
     title?: string

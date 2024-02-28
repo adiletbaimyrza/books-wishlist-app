@@ -13,7 +13,7 @@ const ReviewsPage = () => {
   const dispatch = useDispatch()
 
   const allBooks: GoogleBooksApiResponse[] = [...favourites, ...toRead, ...read]
-  const booksWithReviews = allBooks.filter((book) => book.review !== null)
+  const booksWithReviews = allBooks.filter((book) => book.review !== undefined)
 
   useEffect(() => {
     dispatch(updateFavourites(getBooksFromLocalStorage('favourites')))
@@ -26,12 +26,7 @@ const ReviewsPage = () => {
       <h1 className="grand-title">Your Reviews</h1>
       {booksWithReviews.length > 0 ? (
         booksWithReviews.map((book, index) => (
-          <Review
-            key={index}
-            id={book.id as string}
-            title={book.volumeInfo?.title as string}
-            review={book.review as string}
-          />
+          <Review key={index} book={book} />
         ))
       ) : (
         <div className="no-books">No reviews found</div>

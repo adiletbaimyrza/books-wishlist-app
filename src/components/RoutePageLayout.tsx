@@ -12,7 +12,7 @@ import {
 
 const NAV_LINKS: CustomNavLinkProps[] = [
   {
-    path: '/books-wishlist-app/home',
+    path: '/books-wishlist-app/',
     faIcon: faHouse,
     name: 'Home',
   },

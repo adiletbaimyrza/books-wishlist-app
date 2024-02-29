@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Modal } from '@mui/material'
 import storage from '../utils/localStorageService'
+import { Notification } from '../components'
 
 const Review = ({ book }: ReviewProps) => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -25,6 +26,13 @@ const Review = ({ book }: ReviewProps) => {
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const [openNotification, setOpenNotification] = useState<boolean>(false)
+  const [notificationMessage, setNotificationMessage] = useState<string>('')
+
+  const onCloseNotification = () => {
+    setOpenNotification(false)
   }
 
   const reviewValueChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -61,6 +69,8 @@ const Review = ({ book }: ReviewProps) => {
     storage.updateBooks(collectionType as CollectionType, updatedCollection)
 
     handleClose()
+    setOpenNotification(true)
+    setNotificationMessage('review is edited')
   }
 
   const deleteReviewHandler = () => {
@@ -91,6 +101,9 @@ const Review = ({ book }: ReviewProps) => {
     }
 
     storage.updateBooks(collectionType as CollectionType, updatedCollection)
+
+    setOpenNotification(true)
+    setNotificationMessage('review is deleted')
   }
 
   return (
@@ -129,6 +142,11 @@ const Review = ({ book }: ReviewProps) => {
           <FontAwesomeIcon icon={faTrash} /> Delete
         </button>
       </div>
+      <Notification
+        open={openNotification}
+        onClose={onCloseNotification}
+        message={notificationMessage}
+      />
     </div>
   )
 }

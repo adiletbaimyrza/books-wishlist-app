@@ -52,10 +52,17 @@ type GoogleBooksApiResponse = {
   }
 }
 
+type NotificationProps = {
+  open: boolean
+  onClose: () => void
+  message: string
+}
+
 export type {
   CustomNavLinkProps,
   RoutePageLayoutProps,
   GridBookProps,
   GoogleBooksApiResponse,
   ReviewProps,
+  NotificationProps,
 }

@@ -7,6 +7,7 @@ import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
 import { CollectionType } from '../utils/localStorageService'
 import storage from '../utils/localStorageService'
+import { Notification } from '../components'
 
 const SingleBookPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -19,6 +20,12 @@ const SingleBookPage = () => {
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
   const reviewInputRef = useRef<HTMLInputElement>(null)
+  const [openNotification, setOpenNotification] = useState<boolean>(false)
+  const [notificationMessage, setNotificationMessage] = useState<string>('')
+
+  const onCloseNotification = () => {
+    setOpenNotification(false)
+  }
 
   useEffect(() => {
     if (id) {
@@ -56,6 +63,9 @@ const SingleBookPage = () => {
       case 'to read':
         dispatch(updateToRead(collections))
     }
+
+    setOpenNotification(true)
+    setNotificationMessage('book is added to collections')
   }
 
   const removeFromCollections = () => {
@@ -83,6 +93,9 @@ const SingleBookPage = () => {
           toRead.filter((item) => item.id !== id)
         )
     }
+
+    setOpenNotification(true)
+    setNotificationMessage('book is removed from collections')
   }
 
   const addReview = () => {
@@ -121,6 +134,9 @@ const SingleBookPage = () => {
 
       storage.updateBooks(collectionType as CollectionType, updatedCollection)
     }
+
+    setOpenNotification(true)
+    setNotificationMessage('review is added')
   }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -215,6 +231,12 @@ const SingleBookPage = () => {
           <div>{singleBook?.review}</div>
         </div>
       )}
+
+      <Notification
+        open={openNotification}
+        onClose={onCloseNotification}
+        message={notificationMessage}
+      />
     </RoutePageLayout>
   )
 }

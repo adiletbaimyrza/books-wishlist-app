@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, ChangeEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
@@ -8,6 +8,7 @@ import { fetchSingleBook } from '../utils/googleBooksApiService'
 import { CollectionType } from '../utils/localStorageService'
 import storage from '../utils/localStorageService'
 import { Notification } from '../components'
+import { Modal } from '@mui/material'
 
 const SingleBookPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -19,12 +20,26 @@ const SingleBookPage = () => {
     useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
-  const reviewInputRef = useRef<HTMLInputElement>(null)
   const [openNotification, setOpenNotification] = useState<boolean>(false)
   const [notificationMessage, setNotificationMessage] = useState<string>('')
+  const [open, setOpen] = useState<boolean>(false)
+  const book = storage
+    .getBooks(
+      storage.isInCollections(id as string).collectionType as CollectionType
+    )
+    .find((book) => book.id === id)
+  const [reviewValue, setReviewValue] = useState<string>(book?.review as string)
 
   const onCloseNotification = () => {
     setOpenNotification(false)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleOpen = () => {
+    setOpen(true)
   }
 
   useEffect(() => {
@@ -41,6 +56,10 @@ const SingleBookPage = () => {
       }
     }
   }, [id])
+
+  const reviewValueChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setReviewValue(e.target.value)
+  }
 
   const addToCollections = () => {
     const collections = storage.getBooks(selectedOption)
@@ -98,45 +117,40 @@ const SingleBookPage = () => {
     setNotificationMessage('book is removed from collections')
   }
 
-  const addReview = () => {
-    if (singleBook && reviewInputRef.current) {
-      const updatedBook = {
-        ...singleBook,
-        review: reviewInputRef.current.value,
-      }
-      setSingleBook(updatedBook)
+  const editReviewSubmitHandler = () => {
+    const { collectionType } = storage.isInCollections(id as string)
+    let updatedCollection: GoogleBooksApiResponse[] = []
 
-      const { collectionType } = storage.isInCollections(
-        singleBook.id as string
-      )
-      let updatedCollection: GoogleBooksApiResponse[] = []
+    const updatedBook = { ...book, review: reviewValue }
 
-      switch (collectionType) {
-        case 'favourites':
-          updatedCollection = favourites.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateFavourites(updatedCollection))
-          break
-        case 'read':
-          updatedCollection = read.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateRead(updatedCollection))
-          break
-        case 'to read':
-          updatedCollection = toRead.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateToRead(updatedCollection))
-          break
-      }
-
-      storage.updateBooks(collectionType as CollectionType, updatedCollection)
+    switch (collectionType) {
+      case 'favourites':
+        updatedCollection = favourites.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateFavourites(updatedCollection))
+        break
+      case 'read':
+        updatedCollection = read.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateRead(updatedCollection))
+        break
+      case 'to read':
+        updatedCollection = toRead.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateToRead(updatedCollection))
+        break
     }
 
+    storage.updateBooks(collectionType as CollectionType, updatedCollection)
+
+    handleClose()
     setOpenNotification(true)
-    setNotificationMessage('review is added')
+    setNotificationMessage('review is edited')
+
+    setSingleBook(updatedBook)
   }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -194,7 +208,6 @@ const SingleBookPage = () => {
       <div className="sbp-description">
         {singleBook?.volumeInfo?.description}
       </div>
-      <div className="sbp-review"></div>
       <div className="sbp-controls">
         <button
           id="sbp-control-button"
@@ -215,20 +228,45 @@ const SingleBookPage = () => {
       </div>
       {id && storage.isInCollections(id).isInCollection && (
         <div>
-          <button
-            className="remove-from-collections-button"
-            onClick={removeFromCollections}
-          >
-            Remove from {storage.isInCollections(id).collectionType}
-          </button>
-          <button
-            className="remove-from-collections-button"
-            onClick={addReview}
-          >
-            Add review
-          </button>
-          <input ref={reviewInputRef}></input>
-          <div>{singleBook?.review}</div>
+          <div className="sbp-buttons">
+            <button
+              className="remove-from-collections-button"
+              onClick={removeFromCollections}
+            >
+              Remove from {storage.isInCollections(id).collectionType}
+            </button>
+            <button
+              id="add-review"
+              className="remove-from-collections-button"
+              onClick={handleOpen}
+            >
+              {singleBook?.review ? 'Edit review' : 'Add review'}
+            </button>
+            <Modal open={open} onClose={handleClose}>
+              <div className="modal">
+                <textarea
+                  onChange={reviewValueChangeHandler}
+                  value={reviewValue}
+                  className="modal-textarea"
+                  rows={20}
+                  cols={50}
+                ></textarea>
+                <button
+                  onClick={editReviewSubmitHandler}
+                  className="submit-review"
+                >
+                  Submit
+                </button>
+              </div>
+            </Modal>
+          </div>
+
+          {singleBook?.review && (
+            <div className="sbp-review">
+              <h2 className="sbp-review-title"> Your review: </h2>
+              {singleBook?.review}
+            </div>
+          )}
         </div>
       )}
 

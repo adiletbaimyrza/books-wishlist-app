@@ -14,7 +14,7 @@ const HomePage = () => {
             management tool that helps you keep track of your readings!
           </p>
           <div className="action-buttons">
-            <Link to={'/books-wishlist-app/search'}>
+            <Link to={'/books-wishlist-app/recommended'}>
               <button>Dive in</button>
             </Link>
           </div>

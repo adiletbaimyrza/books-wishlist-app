@@ -7,4 +7,9 @@ type Route = {
 
 type CollectionType = 'favourites' | 'read' | 'to read'
 
-export type { Route, CollectionType }
+type isInCollectionReturnType = {
+  isInCollection: boolean
+  collectionType: CollectionType | null
+}
+
+export type { Route, CollectionType, isInCollectionReturnType }

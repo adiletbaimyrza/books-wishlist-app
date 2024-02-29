@@ -4,14 +4,14 @@ import { RootState } from '../redux/store'
 import { updateRead } from '../redux'
 import { RoutePageLayout, GridBook } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getBooksFromLocalStorage } from '../utils/localStorageService'
+import storage from '../utils/localStorageService'
 
 const ReadPage = () => {
   const read = useSelector((state: RootState) => state.read)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(updateRead(getBooksFromLocalStorage('read')))
+    dispatch(updateRead(storage.getBooks('read')))
   }, [dispatch])
 
   return (

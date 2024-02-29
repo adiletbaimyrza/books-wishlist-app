@@ -1,67 +1,48 @@
 import { GoogleBooksApiResponse } from '../components'
+import { CollectionType } from './utils.types'
 
-type CollectionType = 'favourites' | 'read' | 'to read'
+class LocalStorageService {
+  getBooks(collectionType: CollectionType): GoogleBooksApiResponse[] {
+    const collectionString: string | null = localStorage.getItem(collectionType)
+    const collectionParsed: GoogleBooksApiResponse[] =
+      collectionString !== null ? JSON.parse(collectionString) : []
 
-const getBooksFromLocalStorage = (
-  collectionType: CollectionType
-): GoogleBooksApiResponse[] => {
-  const collectionString: string | null = localStorage.getItem(collectionType)
-  const collectionParsed: GoogleBooksApiResponse[] =
-    collectionString !== null ? JSON.parse(collectionString) : []
+    return collectionParsed
+  }
 
-  return collectionParsed
-}
+  updateBooks(
+    collectionType: CollectionType,
+    newBooks: GoogleBooksApiResponse[]
+  ): void {
+    localStorage.setItem(collectionType, JSON.stringify(newBooks))
+  }
 
-const updateBooksInLocalStorageByCollection = (
-  collectionType: CollectionType,
-  newBooks: GoogleBooksApiResponse[]
-): void => {
-  localStorage.setItem(collectionType, JSON.stringify(newBooks))
-}
+  isInCollection(collectionType: CollectionType, id: string): boolean {
+    const collection = this.getBooks(collectionType)
+    return id ? collection.some((item) => item.id === id) : false
+  }
 
-const isInCollection = (
-  collectionType: CollectionType,
-  id: string
-): boolean => {
-  const collection = getBooksFromLocalStorage(collectionType)
-  return id ? collection.some((item) => item.id === id) : false
-}
+  isInCollections(id: string): {
+    isInCollection: boolean
+    collectionType: CollectionType | null
+  } {
+    const collectionTypes: CollectionType[] = ['favourites', 'read', 'to read']
 
-type isInCollectionReturnType = {
-  isInCollection: boolean
-  collectionType: CollectionType | null
-}
+    for (const collectionType of collectionTypes) {
+      if (this.isInCollection(collectionType, id)) {
+        return {
+          isInCollection: true,
+          collectionType,
+        }
+      }
+    }
 
-const isInCollections = (id: string): isInCollectionReturnType => {
-  if (isInCollection('favourites', id)) {
     return {
-      isInCollection: true,
-      collectionType: 'favourites',
+      isInCollection: false,
+      collectionType: null,
     }
   }
-  if (isInCollection('read', id)) {
-    return {
-      isInCollection: true,
-      collectionType: 'read',
-    }
-  }
-  if (isInCollection('to read', id)) {
-    return {
-      isInCollection: true,
-      collectionType: 'to read',
-    }
-  }
-  return {
-    isInCollection: false,
-    collectionType: null,
-  }
 }
 
-export {
-  getBooksFromLocalStorage,
-  updateBooksInLocalStorageByCollection,
-  isInCollection,
-  isInCollections,
-}
-
-export type { isInCollectionReturnType, CollectionType }
+export default new LocalStorageService()
+export type { CollectionType }

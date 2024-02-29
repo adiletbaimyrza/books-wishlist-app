@@ -5,7 +5,7 @@ const NotFoundPage = () => {
   return (
     <RoutePageLayout>
       NotFoundPage
-      <Link to={'/'}>Go back to home</Link>
+      <Link to={'books-wishlist-app/home'}>Go back to home</Link>
     </RoutePageLayout>
   )
 }

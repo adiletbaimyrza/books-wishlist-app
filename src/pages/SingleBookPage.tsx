@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, ChangeEvent } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../redux/store'
 import { updateFavourites, updateRead, updateToRead } from '../redux'
 import { GoogleBooksApiResponse, RoutePageLayout } from '../components'
 import { fetchSingleBook } from '../utils/googleBooksApiService'
-import {
-  getBooksFromLocalStorage,
-  isInCollections,
-  updateBooksInLocalStorageByCollection,
-} from '../utils/localStorageService'
 import { CollectionType } from '../utils/localStorageService'
+import storage from '../utils/localStorageService'
+import { Notification } from '../components'
+import { Modal } from '@mui/material'
 
 const SingleBookPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -22,15 +20,33 @@ const SingleBookPage = () => {
     useState<CollectionType>('favourites')
   const [singleBook, setSingleBook] = useState<GoogleBooksApiResponse>()
   const { id } = useParams()
-  const reviewInputRef = useRef<HTMLInputElement>(null)
+  const [openNotification, setOpenNotification] = useState<boolean>(false)
+  const [notificationMessage, setNotificationMessage] = useState<string>('')
+  const [open, setOpen] = useState<boolean>(false)
+  const book = storage
+    .getBooks(
+      storage.isInCollections(id as string).collectionType as CollectionType
+    )
+    .find((book) => book.id === id)
+  const [reviewValue, setReviewValue] = useState<string>(book?.review as string)
+
+  const onCloseNotification = () => {
+    setOpenNotification(false)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
 
   useEffect(() => {
     if (id) {
-      const { isInCollection, collectionType } = isInCollections(id)
+      const { isInCollection, collectionType } = storage.isInCollections(id)
       if (isInCollection) {
-        const collection = getBooksFromLocalStorage(
-          collectionType as CollectionType
-        )
+        const collection = storage.getBooks(collectionType as CollectionType)
         const book = collection.find((book) => book.id === id)
         setSingleBook(book)
       } else {
@@ -41,8 +57,12 @@ const SingleBookPage = () => {
     }
   }, [id])
 
+  const reviewValueChangeHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setReviewValue(e.target.value)
+  }
+
   const addToCollections = () => {
-    const collections = getBooksFromLocalStorage(selectedOption)
+    const collections = storage.getBooks(selectedOption)
     if (id) {
       if (!collections.find((collectionItem) => collectionItem.id === id)) {
         collections.push(singleBook as GoogleBooksApiResponse)
@@ -51,7 +71,7 @@ const SingleBookPage = () => {
         // book is already in the collection, cannot add to collections [NOTIFICATION]
       }
     }
-    updateBooksInLocalStorageByCollection(selectedOption, collections)
+    storage.updateBooks(selectedOption, collections)
     switch (selectedOption) {
       case 'favourites':
         dispatch(updateFavourites(collections))
@@ -62,72 +82,75 @@ const SingleBookPage = () => {
       case 'to read':
         dispatch(updateToRead(collections))
     }
+
+    setOpenNotification(true)
+    setNotificationMessage('book is added to collections')
   }
 
   const removeFromCollections = () => {
-    const { collectionType } = isInCollections(id as string)
+    const { collectionType } = storage.isInCollections(id as string)
 
     switch (collectionType) {
       case 'favourites':
         dispatch(updateFavourites(favourites.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'favourites',
           favourites.filter((item) => item.id !== id)
         )
         break
       case 'read':
         dispatch(updateRead(read.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'read',
           read.filter((item) => item.id !== id)
         )
         break
       case 'to read':
         dispatch(updateToRead(toRead.filter((item) => item.id !== id)))
-        updateBooksInLocalStorageByCollection(
+        storage.updateBooks(
           'to read',
           toRead.filter((item) => item.id !== id)
         )
     }
+
+    setOpenNotification(true)
+    setNotificationMessage('book is removed from collections')
   }
 
-  const addReview = () => {
-    if (singleBook && reviewInputRef.current) {
-      const updatedBook = {
-        ...singleBook,
-        review: reviewInputRef.current.value,
-      }
-      setSingleBook(updatedBook)
+  const editReviewSubmitHandler = () => {
+    const { collectionType } = storage.isInCollections(id as string)
+    let updatedCollection: GoogleBooksApiResponse[] = []
 
-      const { collectionType } = isInCollections(singleBook.id as string)
-      let updatedCollection: GoogleBooksApiResponse[] = []
+    const updatedBook = { ...book, review: reviewValue }
 
-      switch (collectionType) {
-        case 'favourites':
-          updatedCollection = favourites.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateFavourites(updatedCollection))
-          break
-        case 'read':
-          updatedCollection = read.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateRead(updatedCollection))
-          break
-        case 'to read':
-          updatedCollection = toRead.map((book) =>
-            book.id === singleBook.id ? updatedBook : book
-          )
-          dispatch(updateToRead(updatedCollection))
-          break
-      }
-
-      updateBooksInLocalStorageByCollection(
-        collectionType as CollectionType,
-        updatedCollection
-      )
+    switch (collectionType) {
+      case 'favourites':
+        updatedCollection = favourites.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateFavourites(updatedCollection))
+        break
+      case 'read':
+        updatedCollection = read.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateRead(updatedCollection))
+        break
+      case 'to read':
+        updatedCollection = toRead.map((boo) =>
+          boo.id === id ? updatedBook : boo
+        )
+        dispatch(updateToRead(updatedCollection))
+        break
     }
+
+    storage.updateBooks(collectionType as CollectionType, updatedCollection)
+
+    handleClose()
+    setOpenNotification(true)
+    setNotificationMessage('review is edited')
+
+    setSingleBook(updatedBook)
   }
 
   const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -185,7 +208,6 @@ const SingleBookPage = () => {
       <div className="sbp-description">
         {singleBook?.volumeInfo?.description}
       </div>
-      <div className="sbp-review"></div>
       <div className="sbp-controls">
         <button
           id="sbp-control-button"
@@ -204,24 +226,55 @@ const SingleBookPage = () => {
           <option value="read">read</option>
         </select>
       </div>
-      {id && isInCollections(id).isInCollection && (
+      {id && storage.isInCollections(id).isInCollection && (
         <div>
-          <button
-            className="remove-from-collections-button"
-            onClick={removeFromCollections}
-          >
-            Remove from {isInCollections(id).collectionType}
-          </button>
-          <button
-            className="remove-from-collections-button"
-            onClick={addReview}
-          >
-            Add review
-          </button>
-          <input ref={reviewInputRef}></input>
-          <div>{singleBook?.review}</div>
+          <div className="sbp-buttons">
+            <button
+              className="remove-from-collections-button"
+              onClick={removeFromCollections}
+            >
+              Remove from {storage.isInCollections(id).collectionType}
+            </button>
+            <button
+              id="add-review"
+              className="remove-from-collections-button"
+              onClick={handleOpen}
+            >
+              {singleBook?.review ? 'Edit review' : 'Add review'}
+            </button>
+            <Modal open={open} onClose={handleClose}>
+              <div className="modal">
+                <textarea
+                  onChange={reviewValueChangeHandler}
+                  value={reviewValue}
+                  className="modal-textarea"
+                  rows={20}
+                  cols={50}
+                ></textarea>
+                <button
+                  onClick={editReviewSubmitHandler}
+                  className="submit-review"
+                >
+                  Submit
+                </button>
+              </div>
+            </Modal>
+          </div>
+
+          {singleBook?.review && (
+            <div className="sbp-review">
+              <h2 className="sbp-review-title"> Your review: </h2>
+              {singleBook?.review}
+            </div>
+          )}
         </div>
       )}
+
+      <Notification
+        open={openNotification}
+        onClose={onCloseNotification}
+        message={notificationMessage}
+      />
     </RoutePageLayout>
   )
 }

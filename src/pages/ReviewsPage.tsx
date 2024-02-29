@@ -3,7 +3,7 @@ import { RootState } from '../redux/store'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateFavourites, updateRead, updateToRead } from '../redux'
 import { GoogleBooksApiResponse, RoutePageLayout, Review } from '../components'
-import { getBooksFromLocalStorage } from '../utils/localStorageService'
+import storage from '../utils/localStorageService'
 
 const ReviewsPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
@@ -16,9 +16,9 @@ const ReviewsPage = () => {
   const booksWithReviews = allBooks.filter((book) => book.review !== undefined)
 
   useEffect(() => {
-    dispatch(updateFavourites(getBooksFromLocalStorage('favourites')))
-    dispatch(updateToRead(getBooksFromLocalStorage('to read')))
-    dispatch(updateRead(getBooksFromLocalStorage('read')))
+    dispatch(updateFavourites(storage.getBooks('favourites')))
+    dispatch(updateToRead(storage.getBooks('to read')))
+    dispatch(updateRead(storage.getBooks('read')))
   }, [dispatch])
 
   return (

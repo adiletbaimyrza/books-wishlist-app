@@ -3,8 +3,9 @@ import CustomNavLink from './CustomNavLink'
 import RoutePageLayout from './RoutePageLayout'
 import GridBook from './GridBook'
 import Review from './Review'
+import Notification from './Notification'
 
-export { CustomNavLink, RoutePageLayout, GridBook, Review }
+export { CustomNavLink, RoutePageLayout, GridBook, Review, Notification }
 
 // types
 import {

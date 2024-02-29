@@ -308,15 +308,22 @@ body,
   padding: 10px 20px;
 }
 #sbp-control-button:hover {
-  background-color: #7e33df;
+  background-color: #682bb8;
+  cursor: pointer;
 }
 
 .remove-from-collections-button {
+  font-size: 16px;
   background-color: #aa6060;
   color: #ffffff;
   border-radius: 6px;
   border: unset;
   padding: 10px 20px;
+}
+
+.remove-from-collections-button:hover {
+  background-color: #7e4141;
+  cursor: pointer;
 }
 
 .no-books {
@@ -484,4 +491,27 @@ body,
 .submit-review:hover {
   background-color: #6f26ce;
   cursor: pointer;
+}
+
+#add-review {
+  background-color: #0c8ce9;
+  margin-left: 20px;
+}
+
+#add-review:hover {
+  background-color: #055691;
+}
+
+.sbp-buttons {
+  margin-bottom: 30px;
+}
+
+.sbp-review {
+  background-color: #414141;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.sbp-review-title {
+  margin-bottom: 20px;
 }

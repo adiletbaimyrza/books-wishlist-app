@@ -13,7 +13,7 @@ import { Route } from './utils.types'
 
 const routes: Route[] = [
   {
-    path: '/books-wishlist-app/home',
+    path: '/books-wishlist-app/',
     element: <HomePage />,
     errorElement: <NotFoundPage />,
   },

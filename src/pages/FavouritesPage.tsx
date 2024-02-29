@@ -4,14 +4,14 @@ import { RootState } from '../redux/store'
 import { updateFavourites } from '../redux'
 import { RoutePageLayout, GridBook } from '../components'
 import { mapBook } from '../utils/mappers'
-import { getBooksFromLocalStorage } from '../utils/localStorageService'
+import storage from '../utils/localStorageService'
 
 const FavouritesPage = () => {
   const favourites = useSelector((state: RootState) => state.favourites)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(updateFavourites(getBooksFromLocalStorage('favourites')))
+    dispatch(updateFavourites(storage.getBooks('favourites')))
   }, [dispatch])
 
   return (
